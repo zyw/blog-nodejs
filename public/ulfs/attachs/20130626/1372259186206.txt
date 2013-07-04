@@ -1,0 +1,13 @@
+----- BEGIN LICENSE -----
+RegistredTo=test
+ExpirationDate=2013-09-27
+Version=5.0
+ServerLimit=20
+
+----- END LICENSE -----
+----- BEGIN SIGNATURE -----
+MC0CFQCC9f8AkA7h1Pt3
+vazb0/MuBzg1fwIUdQ73
+PNEOebKuuZ590KE+Vrjr
+4UA=
+----- END SIGNATURE -----

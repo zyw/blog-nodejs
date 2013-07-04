@@ -1,0 +1,37 @@
+<% include includes/header %>
+<div class="container">
+    <% if (locals.error != '') { %>
+    <div class="alert">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong><%= locals.error %></strong>
+    </div>
+    <% } %>
+    <fieldset>
+        <legend>用户登录</legend>
+        <form class="form-horizontal" method="post" action="/login">
+            <div class="control-group">
+                <label class="control-label" for="inputName">用户名</label>
+                <div class="controls">
+                    <input type="text" id="inputName" name="inputName" placeholder="用户名">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPassword">密码</label>
+                <div class="controls">
+                    <input type="password" id="inputPassword" name="inputPassword" placeholder="密码">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <a href="#">找回密码</a>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">登 录</button>
+                &nbsp;&nbsp;&nbsp;
+                <a href="/reg" class="btn">注 册</a>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<% include includes/footer%>

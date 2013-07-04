@@ -1,0 +1,104 @@
+<% include includes/header %>
+<div class="container">
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    <div class="hero-unit">
+        <h1>欢迎来到由Node.js开发的blog系统</h1>
+        <p>
+            您好！您现在访问的blog系统是由Node.js+MongoDB开发的，欢迎提出宝贵意见！
+        </p>
+        <% if(!locals.user){ %>
+            <p>
+                <a href="/login" class="btn btn-primary btn-large">登 录</a>
+                <a href="/reg" class="btn btn-large">注 册</a>
+            </p>
+        <% } else{ %>
+            <button class="btn btn-primary btn-large">发表博文</button>
+        <% } %>
+    </div>
+    <!-- Example row of columns -->
+    <div class="container-fluid">
+        <div class="row-fluid">
+            <div class="span10">
+                <h2>Heading</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+                <hr>
+
+                <h2>Heading</h2>
+                <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus. Etiam porta sem malesuada magna mollis euismod. Donec sed odio dui. </p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+                <hr>
+
+                <h2>Heading</h2>
+                <p>Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.</p>
+                <p><a class="btn" href="#">View details &raquo;</a></p>
+                <hr>
+                <div class="pagination pagination-right">
+                    <ul>
+                        <li><a href="#">«</a></li>
+                        <li><a href="#">1</a></li>
+                        <li><a href="#">2</a></li>
+                        <li><a href="#">3</a></li>
+                        <li><a href="#">4</a></li>
+                        <li><a href="#">5</a></li>
+                        <li><a href="#">»</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="span2" style="padding-top: 10px;">
+                <div class="right-nav">
+                    <div class="input-append">
+                        <input class="span8" id="appendedInputButton" type="text">
+                        <button class="btn" type="button">搜</button>
+                    </div>
+                </div>
+                <div class="right-nav">
+                    <h5>近期文章</h5>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <div class="right-nav">
+                    <h5>近期评论</h5>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <div class="right-nav">
+                    <h5>文章分类</h5>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <div class="right-nav">
+                    <h5>推荐文章</h5>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+                <div class="right-nav">
+                    <h5>阅读排行</h5>
+                    <ul>
+                        <li><a href="#">Action</a></li>
+                        <li><a href="#">Another action</a></li>
+                        <li><a href="#">Something else here</a></li>
+                        <li><a href="#">Separated link</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<% include includes/footer %>

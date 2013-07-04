@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <link href="/after/css/bootstrap.css" rel="stylesheet">
+    <link href="/after/css/bootstrap-responsive.css" rel="stylesheet">
+    <link href="/after/css/style.css" rel="stylesheet">
+</head>
+<body>
+    <div class="login">
+        <% include includes/error_alert %>
+        <fieldset>
+            <legend>用户登录</legend>
+            <form class="form-horizontal" method="post" action="/login">
+                <div class="control-group">
+                    <label class="control-label" for="inputName">用户名</label>
+                    <div class="controls">
+                        <input type="text" id="inputName" name="inputName" placeholder="用户名">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="inputPassword">密码</label>
+                    <div class="controls">
+                        <input type="password" id="inputPassword" name="inputPassword" placeholder="密码">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <div class="controls">
+                        <a href="#">找回密码</a>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary btn-large">登 录</button>
+                </div>
+            </form>
+        </fieldset>
+    </div>
+
+<% include includes/footer %>

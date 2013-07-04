@@ -1,0 +1,49 @@
+<% include includes/header %>
+<div class="container">
+    <% if (locals.error != '') { %>
+        <div class="alert">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            <strong><%= locals.error %></strong>
+        </div>
+    <% } %>
+    <fieldset>
+        <legend>用户注册</legend>
+        <form method="post" action="/reg" class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label" for="inputName">用户名</label>
+                <div class="controls">
+                    <input type="text" id="inputName" name="inputName" placeholder="用户名">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputPassword">密码</label>
+                <div class="controls">
+                    <input type="password" id="inputPassword" name="inputPassword" placeholder="密码">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="qrPassword">确认密码</label>
+                <div class="controls">
+                    <input type="password" id="qrPassword" name="qrPassword" placeholder="确认密码">
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="email">邮箱</label>
+                <div class="controls">
+                    <input type="text" id="email" name="email" placeholder="邮箱">
+                </div>
+            </div>
+            <div class="control-group">
+                <div class="controls">
+                    <label class="checkbox">
+                        <input type="checkbox"> 同意网站协议 *
+                    </label>
+                </div>
+            </div>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">注 册</button>
+            </div>
+        </form>
+    </fieldset>
+</div>
+<% include includes/footer %>
