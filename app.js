@@ -26,7 +26,7 @@ app.use(express.cookieParser());
 app.use(express.session({
     secret:settings.cookieSecret,
     key:settings.db,
-    cookie:{maxAge:1000},   //cookie存储天数
+    cookie:{maxAge:1000 * 60 * 30},   //session 保存时间 单位是毫秒
     store:new MongoStore({
         db:settings.db
     })

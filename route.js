@@ -14,18 +14,19 @@ var afterManager = require('./routes/afterManager')
 module.exports =function(app){
     app.get('/', routes.index);
 
-    app.get('/reg',pagesRender.reg);
-    app.get('/login',pagesRender.login);
-    app.get('/logout',pagesRender.logout);
+    app.get('/reg',user.reg);
+    app.get('/login',user.login);
+    app.get('/logout',user.logout);
 
-    app.post('/reg',user.reg);
-    app.post('/login',user.login);
+    app.post('/postreg',user.postreg);
+    app.post('/postlogin',user.postlogin);
 
 
     //包含admin的访问目录
     app.all('/admin/*',afterManager.checking);
 
     app.get('/admin/login',afterManager.login);
+    app.post('/admin/postlogin',afterManager.postlogin);
 
     app.get('/admin/index',afterManager.index);
 
@@ -33,6 +34,7 @@ module.exports =function(app){
     app.post('/admin/uploadImage',afterManager.uploadImage);
     app.post('/admin/imgManager',afterManager.imgManager);
     app.post('/admin/attachment',afterManager.attachment);
+    app.post('/admin/saveWarticle',afterManager.saveWarticle);
 
 
     app.get('/admin/article',afterManager.article);

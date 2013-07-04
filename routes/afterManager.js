@@ -7,7 +7,7 @@
  */
 
 var Aclassify = require('../module/aclassify'),
-    util = require('../module/util'),
+    Toolkit = require('../module/util'),
     fs = require('fs'),
     settings = require('../settings');
 
@@ -19,10 +19,6 @@ exports.login = function(req,res){
 
 exports.index = function(req,res){
     res.render('admin_views/index');
-};
-
-exports.warticle = function(req,res){
-    res.render('admin_views/warticle')
 };
 
 exports.article = function(req,res){
@@ -61,10 +57,23 @@ exports.aclassify = function(req,res){
     });
 };
 
+exports.warticle = function(req,res){
+    Aclassify.aclasifyAll(function(err,acs){
+        res.render('admin_views/warticle',{acs:acs});
+    });
+};
+
 /*---------------------逻辑处理----------------------------------*/
+
+//用户登录
+exports.postlogin = function(req,res){
+    Toolkit.login(req,res,{failPage:'/admin/login',successPage:'/admin/index'});
+};
+
+//检查用户是否登录的中间件
 exports.checking = function(req,res,next){
     var reqPath = req.path;
-    if('/admin/login' != reqPath){
+    if('/admin/login' != reqPath && '/admin/postlogin' != reqPath){
         var user = req.session.user;
         if(!user){
             req.flash('error','您还没有登录！');
@@ -74,6 +83,7 @@ exports.checking = function(req,res,next){
     next();
 };
 
+//上传图片
 exports.uploadImage = function(req,res){
     // 获得文件的临时路径
     var tmp_path = req.files.imagefile.path;
@@ -83,7 +93,7 @@ exports.uploadImage = function(req,res){
     var extName = fileName.substring(fileName.lastIndexOf('.'));
     // 获得日期并创建日期文件夹保存不同日期的文件
     var date = new Date();
-    var dateFolder = date.getFullYear() + "" + util.plusZore(date.getMonth()+1) + "" + util.plusZore(date.getDate());
+    var dateFolder = date.getFullYear() + "" + Toolkit.plusZore(date.getMonth()+1) + "" + Toolkit.plusZore(date.getDate());
     var basePath = settings.commonPath + settings.imgaffix + dateFolder + "/";
     if(!fs.existsSync(basePath)){
         fs.mkdirSync(basePath);
@@ -98,10 +108,11 @@ exports.uploadImage = function(req,res){
         res.json({url:settings.imgaffix + dateFolder + "/" + newFileName,title:fileName,original:fileName,state:'SUCCESS'});
     });
 };
+//上传图片管理
 exports.imgManager = function(req,res){
-    util.filesPath(settings.commonPath + settings.imgaffix);
-    res.send(util.pathURL);
-    util.pathURL = "";
+    Toolkit.filesPath(settings.commonPath + settings.imgaffix);
+    res.send(Toolkit.pathURL);
+    Toolkit.pathURL = "";
 };
 //上传附件
 exports.attachment = function(req,res){
@@ -112,7 +123,7 @@ exports.attachment = function(req,res){
     //文件扩展名
     var extName = file_name.substring(file_name.lastIndexOf('.'));
     var date = new Date();
-    var dateFolder = date.getFullYear() + "" + util.plusZore(date.getMonth()+1) + "" + util.plusZore(date.getDate());
+    var dateFolder = date.getFullYear() + "" + Toolkit.plusZore(date.getMonth()+1) + "" + Toolkit.plusZore(date.getDate());
 
     var basePath = settings.commonPath + settings.attach + dateFolder + "/";
 
@@ -129,6 +140,11 @@ exports.attachment = function(req,res){
     });
 };
 
+exports.saveWarticle = function(req,res){
+
+};
+
+//添加文章分类
 exports.addclassify = function(req,res){
     var acname = req.body.acname;
     if(acname.trim() == ""){
@@ -144,6 +160,7 @@ exports.addclassify = function(req,res){
         return res.redirect('/admin/aclassify');
     });
 };
+//删除文章分类
 exports.delclassify = function(req,res){
     Aclassify.deleById(req.query.id,function(err){
         if(err){
@@ -154,6 +171,7 @@ exports.delclassify = function(req,res){
         return res.redirect('/admin/aclassify');
     });
 };
+//修改文章分类
 exports.updateclassify = function(req,res){
     var _id = req.body._id;
     var acname = req.body.acname;

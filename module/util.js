@@ -6,9 +6,10 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var crypto = require('crypto'),
-    settings = require('../settings'),
-    fs = require('fs');
+var crypto = require('crypto')
+    , settings = require('../settings')
+    , fs = require('fs')
+    , User = require("./user");
 
 function Toolkit(){};
 
@@ -50,3 +51,25 @@ Toolkit.filesPath = function(path){
             }
     });
 };
+
+Toolkit.login = function(req,res,opts){
+    var name = req.body.inputName,
+        password = req.body.inputPassword;
+    User.findByName(name,function(err,user){
+        if(err){
+            req.flash('error','登录失败，请稍后重试！');
+            return res.redirect(opts.failPage);
+        }
+        if(!user){
+            req.flash('error','用户不存在！');
+            return res.redirect(opts.failPage);
+        }
+        //检查密码是否一致
+        if(Toolkit.md5(password) != user.password){
+            req.flash('error','输入密码有误!');
+            return res.redirect(opts.failPage);
+        }
+        req.session.user = user;
+        res.redirect(opts.successPage);
+    });
+}
