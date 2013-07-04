@@ -45,6 +45,8 @@ module.exports =function(app){
     app.post('/admin/updateclassify',afterManager.updateclassify);
 
     app.get('/admin/label',afterManager.label);
+    app.post('/admin/addlabel',afterManager.addlabel);
+
     app.get('/admin/remark',afterManager.remark);
     app.get('/admin/nav',afterManager.nav);
     app.get('/admin/moldboard',afterManager.moldboard);

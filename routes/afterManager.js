@@ -6,10 +6,12 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var Aclassify = require('../module/aclassify'),
-    Toolkit = require('../module/util'),
-    fs = require('fs'),
-    settings = require('../settings');
+var Aclassify = require('../module/aclassify')
+    , Alabel = require('../module/alabel')
+    , Toolkit = require('../module/util')
+    , util = require('util')
+    , fs = require('fs')
+    , settings = require('../settings');
 
 /*---------------------渲染页面----------------------------------*/
 
@@ -23,10 +25,6 @@ exports.index = function(req,res){
 
 exports.article = function(req,res){
     res.render('admin_views/article')
-};
-
-exports.label = function(req,res){
-    res.render('admin_views/label')
 };
 
 exports.remark = function(req,res){
@@ -53,13 +51,29 @@ exports.umanager = function(req,res){
 
 exports.aclassify = function(req,res){
     Aclassify.aclasifyAll(function(err,acs){
+        if(err){
+            req.flash('error',"查询文章分类出错！");
+            return res.redirect('/admin/index');
+        }
         res.render('admin_views/aclassify',{acs:acs});
     });
 };
 
 exports.warticle = function(req,res){
     Aclassify.aclasifyAll(function(err,acs){
-        res.render('admin_views/warticle',{acs:acs});
+        Alabel.alabelAll(function(err,als){
+            res.render('admin_views/warticle',{acs:acs,als:util.inspect(als)});
+        });
+    });
+};
+
+exports.label = function(req,res){
+    Alabel.alabelAll(function(err,als){
+        if(err){
+            req.flash('error',"查询文章标签出错！");
+            return res.redirect('/admin/index');
+        }
+        res.render('admin_views/label',{als:als});
     });
 };
 
@@ -144,6 +158,7 @@ exports.saveWarticle = function(req,res){
 
 };
 
+/*+++++++++++++++++++文章分类操作+++++++++++++++++++++++++*/
 //添加文章分类
 exports.addclassify = function(req,res){
     var acname = req.body.acname;
@@ -151,7 +166,7 @@ exports.addclassify = function(req,res){
         req.flash('error','你为输入有效的分类名称！');
         return res.redirect('/admin/aclassify');
     }
-    var aclassify = new Aclassify({acname:req.body.acname});
+    var aclassify = new Aclassify({acname:acname});
     aclassify.save(function(err,docs){
         if(err){
             req.flash('error','添加错误，请稍后再试！');
@@ -185,3 +200,22 @@ exports.updateclassify = function(req,res){
         return res.redirect('/admin/aclassify');
     });
 }
+
+/*+++++++++++++++++++文章标签操作+++++++++++++++++++++++++*/
+
+exports.addlabel = function(req,res){
+    var alname = req.body.alname;
+    if(alname.trim() == ""){
+        req.flash('error','你为输入有效的分类名称！');
+        return res.redirect('/admin/aclassify');
+    }
+    var alabel = new Alabel({alname:alname});
+    alabel.save(function(err,docs){
+        if(err){
+            req.flash('error','添加错误，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        return res.redirect('/admin/label');
+    });
+};
+
