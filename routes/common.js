@@ -11,18 +11,7 @@ var Aclassify = require('../module/aclassify'),
     fs = require('fs'),
     settings = require('../settings');
 
-exports.checking = function(req,res,next){
-    var reqPath = req.path;
-    //console.log("dddddddd" + reqPath);
-    if('/admin/login' != reqPath){
-        var user = req.session.user;
-        if(!user){
-            req.flash('error','您还没有登录！');
-            return res.redirect('/admin/login');
-        }
-    }
-    next();
-};
+/*---------------------渲染页面----------------------------------*/
 
 exports.login = function(req,res){
     res.render('admin_views/login');
@@ -34,6 +23,55 @@ exports.index = function(req,res){
 
 exports.warticle = function(req,res){
     res.render('admin_views/warticle')
+};
+
+exports.article = function(req,res){
+    res.render('admin_views/article')
+};
+
+exports.label = function(req,res){
+    res.render('admin_views/label')
+};
+
+exports.remark = function(req,res){
+    res.render('admin_views/remark')
+};
+
+exports.nav = function(req,res){
+    res.render('admin_views/nav')
+};
+
+exports.moldboard = function(req,res){
+    res.render('admin_views/moldboard')
+};
+
+exports.links = function(req,res){
+    res.render('admin_views/links')
+};
+
+exports.umanager = function(req,res){
+    res.render('admin_views/umanager')
+};
+
+/*---------------------填充数据加渲染页面-------------------------------*/
+
+exports.aclassify = function(req,res){
+    Aclassify.aclasifyAll(function(err,acs){
+        res.render('admin_views/aclassify',{acs:acs});
+    });
+};
+
+/*---------------------逻辑处理----------------------------------*/
+exports.checking = function(req,res,next){
+    var reqPath = req.path;
+    if('/admin/login' != reqPath){
+        var user = req.session.user;
+        if(!user){
+            req.flash('error','您还没有登录！');
+            return res.redirect('/admin/login');
+        }
+    }
+    next();
 };
 
 exports.uploadImage = function(req,res){
@@ -91,15 +129,6 @@ exports.attachment = function(req,res){
     });
 };
 
-exports.article = function(req,res){
-    res.render('admin_views/article')
-};
-
-exports.aclassify = function(req,res){
-    Aclassify.aclasifyAll(function(err,acs){
-        res.render('admin_views/aclassify',{acs:acs});
-    });
-};
 exports.addclassify = function(req,res){
     var acname = req.body.acname;
     if(acname.trim() == ""){
@@ -138,27 +167,3 @@ exports.updateclassify = function(req,res){
         return res.redirect('/admin/aclassify');
     });
 }
-
-exports.label = function(req,res){
-    res.render('admin_views/label')
-};
-
-exports.remark = function(req,res){
-    res.render('admin_views/remark')
-};
-
-exports.nav = function(req,res){
-    res.render('admin_views/nav')
-};
-
-exports.moldboard = function(req,res){
-    res.render('admin_views/moldboard')
-};
-
-exports.links = function(req,res){
-    res.render('admin_views/links')
-};
-
-exports.umanager = function(req,res){
-    res.render('admin_views/umanager')
-};
