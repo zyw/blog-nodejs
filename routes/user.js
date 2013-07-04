@@ -7,22 +7,6 @@ var User = require("../module/user")
     , Toolkit = require('../module/util')
     , settings = require('../settings');
 
-/*------------------------------页面渲染-------------------------*/
-
-//渲染注册页面
-exports.reg = function(req,res){
-    res.render('skin_views/' +settings.template + '/reg');
-};
-//渲染登录页面
-exports.login = function(req,res){
-    res.render('skin_views/' +settings.template + '/login');
-};
-//退出
-exports.logout = function(req,res){
-    req.session.user = null;
-    res.render('skin_views/' +settings.template + '/suclogout');
-}
-
 /*---------------------逻辑处理------------------------------------*/
 //注册
 exports.reg = function(req,res){
@@ -32,8 +16,7 @@ exports.reg = function(req,res){
         req.flash('error','两次输入密码不一致！');
         return res.redirect('/reg');
     }
-//    var md5 = crypto.createHash('md5');
-//    var password = md5.update(p1).digest('hex');
+
     var user = new User({name:req.body['inputName'],password:Toolkit.md5(p1),email:req.body['email']});
     user.save(function(err,users){
         if(err){
@@ -68,5 +51,4 @@ exports.login = function(req,res){
            req.session.user = user;
            res.redirect('/');
        });
-
 };
