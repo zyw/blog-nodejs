@@ -31,6 +31,7 @@ module.exports =function(app){
     app.get('/admin/index',afterManager.index);
 
     app.get('/admin/warticle',afterManager.warticle);
+    app.post('/admin/addarticle',afterManager.addarticle);
     app.post('/admin/uploadImage',afterManager.uploadImage);
     app.post('/admin/imgManager',afterManager.imgManager);
     app.post('/admin/attachment',afterManager.attachment);
@@ -45,7 +46,9 @@ module.exports =function(app){
     app.post('/admin/updateclassify',afterManager.updateclassify);
 
     app.get('/admin/label',afterManager.label);
+    app.get('/admin/dellabel',afterManager.dellabel);
     app.post('/admin/addlabel',afterManager.addlabel);
+    app.post('/admin/updatelabel',afterManager.updatelabel);
 
     app.get('/admin/remark',afterManager.remark);
     app.get('/admin/nav',afterManager.nav);

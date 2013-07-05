@@ -9,6 +9,7 @@
 var db = require("./db");
 
 function User(user){
+    this.id = user.id;
     this.name = user.name;
     this.password = user.password;
     this.email = user.email;
@@ -18,15 +19,21 @@ module.exports = User;
 
 User.prototype.save = function(callback){
     var user = {
+        id:1,
         name : this.name,
         password:this.password,
         email:this.email
     };
-    db.collection("user").insert(user,function(err,docs){
-        if(err){
-            return callback(err);
+    db.collection('user').find().sort({id:-1}).limit(1).toArray(function(err,maxobj){
+        if(maxobj.length){
+            user.id = maxobj[0].id + 1;
         }
-        return callback(err,docs);
+        db.collection("user").insert(user,function(err,docs){
+            if(err){
+                return callback(err);
+            }
+            return callback(err,docs);
+        });
     });
 }
 User.findByName = function(name,callback){
@@ -35,8 +42,7 @@ User.findByName = function(name,callback){
             return callback(err,null);
         }
         if(doc){
-            var user = new User(doc);
-            return callback(err,user);
+            return callback(err,doc);
         }else{
             return callback(err,null);
         }

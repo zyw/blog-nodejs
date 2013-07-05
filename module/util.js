@@ -9,6 +9,7 @@
 var crypto = require('crypto')
     , settings = require('../settings')
     , fs = require('fs')
+    , util = require('util')
     , User = require("./user");
 
 function Toolkit(){};
@@ -50,6 +51,27 @@ Toolkit.filesPath = function(path){
                 Toolkit.filesPath(pathName);
             }
     });
+};
+
+Toolkit.inspect = function(objs,attrs){
+    if(objs == null)
+        return "[]";
+
+    var result = [];
+    for(var i = 0; i<objs.length; i++){
+        var avs = [];
+        if(attrs != null && attrs != undefined){
+            for(var j = 0; j < attrs.length; j++){
+                avs.push(attrs[j] + ":'" + objs[i][attrs[j]] + "'");
+            }
+        }else{
+            for(var key in objs[i]){
+                avs.push(key + ":'" + objs[i][key] + "'");
+            }
+        }
+        result[i] = "{" + avs.join(',') + "}";
+    }
+    return "[" + result.join(',') + "]";
 };
 
 Toolkit.login = function(req,res,opts){

@@ -142,7 +142,9 @@
         ,imageManagerUrl:"/admin/imgManager"       //图片在线管理的处理地址
         ,imageManagerPath:""                                    //图片修正地址，同imagePath
 
+        //上传图片写入数据库使用的隐藏input的id
         ,updateImgInputId:"imageName"
+        //上传附件写入数据库要使用的隐藏input的id
         ,updateAttaInputId:"attachName"
 
         , toolbars:[

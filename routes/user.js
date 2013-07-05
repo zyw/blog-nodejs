@@ -38,7 +38,6 @@ exports.postreg = function(req,res){
             req.flash('error','注册失败请稍后重试！');
             res.redirect('/reg');
         }
-        //console.log(users[0]._id + "==" + users[0].name);
         req.session.user = users[0];
         req.flash('success','注册成功！');
         res.redirect('/');

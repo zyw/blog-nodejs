@@ -11,7 +11,7 @@
             <div class="topmenu">
                 <form method="post" action="/admin/addlabel" style="margin: 0 0;">
                     <div class="manbtn">
-                        <button id="addacname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
+                        <button id="addalname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
                     </div>
                     <div class="manbtn">
                         <input id="alname" class="span2" type="text" name="alname" placeholder="标签名">
@@ -43,9 +43,9 @@
                             <%= als[i].alname %>
                         </td>
                         <td>
-                            <a class="btn btn-link" style="padding: 0;" onclick="updateAclassify('<%= als[i]._id %>','<%= als[i].alname %>')">修改</a>
+                            <a class="btn btn-link" style="padding: 0;" onclick="updateLabel('<%= als[i]._id %>','<%= als[i].alname %>')">修改</a>
                             &nbsp;
-                            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delclassify?id=<%= als[i]._id %>')" style="padding: 0;">删除</a>
+                            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellabel?id=<%= als[i]._id %>')" style="padding: 0;">删除</a>
                         </td>
                     </tr>
                     <% } %>
@@ -62,32 +62,33 @@
     </div>
 </div>
 <script type="text/javascript">
-    function updateAclassify(_id,alname){
-        if(!$("#updateclassify").length > 0){
-            var alertHTML = $("<div id='updateclassify' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='classifyLabel' aria-hidden='true'>" +
-                    "<div class='modal-header'>" +
-                    "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>" +
-                    "<h3 id='classifyLabel'>修改</h3> " +
-                    "</div>" +
-                    "<div class='modal-body'>" +
-                    "<form id='uclassifyForm' action='/admin/updateclassify' method='post'>" +
-                    "<input type='hidden' name='_id' id='_id'>" +
-                    "分类名称：<input type='text' name='acname' id='uacname'>" +
-                    "</form>" +
-                    "</div>" +
-                    "<div class='modal-footer'>" +
-                    "<button class='btn btn-primary' id='confirm' data-dismiss='modal' aria-hidden='true'>确定</button>" +
-                    "<button class='btn' data-dismiss='modal' aria-hidden='true'>取消</button>" +
-                    "</div>" +
-                    "</div>");
-            $('body').append(alertHTML);
-            $('#confirm').on('click',function(){
-                $("#uclassifyForm").submit();
-            });
-        }
-        $("#_id").val(_id);
-        $("#uacname").val(alname);
-        $("#updateclassify").modal('show');
+    function updateLabel(_id,alname){
+        $.myblog.updateInfo({id:_id,updateName:alname,action:'/admin/updatelabel',label:'标签名称'});
+//        if(!$("#updatelabel").length > 0){
+//            var alertHTML = $("<div id='updatelabel' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='labelLabel' aria-hidden='true'>" +
+//                    "<div class='modal-header'>" +
+//                    "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>" +
+//                    "<h3 id='labelLabel'>修改</h3> " +
+//                    "</div>" +
+//                    "<div class='modal-body'>" +
+//                    "<form id='ulabelForm' action='/admin/updatelabel' method='post'>" +
+//                    "<input type='hidden' name='_id' id='_id'>" +
+//                    "标签名称：<input type='text' name='alname' id='ualname'>" +
+//                    "</form>" +
+//                    "</div>" +
+//                    "<div class='modal-footer'>" +
+//                    "<button class='btn btn-primary' id='confirm' data-dismiss='modal' aria-hidden='true'>确定</button>" +
+//                    "<button class='btn' data-dismiss='modal' aria-hidden='true'>取消</button>" +
+//                    "</div>" +
+//                    "</div>");
+//            $('body').append(alertHTML);
+//            $('#confirm').on('click',function(){
+//                $("#ulabelForm").submit();
+//            });
+//        }
+//        $("#_id").val(_id);
+//        $("#ualname").val(alname);
+//        $("#updatelabel").modal('show');
     }
 </script>
 

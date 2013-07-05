@@ -101,6 +101,33 @@ blogModule = {
         },
         realDelete:function(urlAndData){
             location.href=urlAndData;
+        },
+        updateInfo:function(opts){
+            if(!$("#updateAlert").length > 0){
+                var alertHTML = $("<div id='updateAlert' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='updateLabel' aria-hidden='true'>" +
+                    "<div class='modal-header'>" +
+                    "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>" +
+                    "<h3 id='updateLabel'>修改</h3> " +
+                    "</div>" +
+                    "<div class='modal-body'>" +
+                    "<form id='updateForm' action='"+opts.action+"' method='post'>" +
+                    "<input type='hidden' name='_id' id='_id'>" +
+                    opts.label + "：<input type='text' name='updateName' id='updateName'>" +
+                    "</form>" +
+                    "</div>" +
+                    "<div class='modal-footer'>" +
+                    "<button class='btn btn-primary' id='confirm' data-dismiss='modal' aria-hidden='true'>确定</button>" +
+                    "<button class='btn' data-dismiss='modal' aria-hidden='true'>取消</button>" +
+                    "</div>" +
+                    "</div>");
+                $('body').append(alertHTML);
+                $('#confirm').on('click',function(){
+                    $("#updateForm").submit();
+                });
+            }
+            $("#_id").val(opts.id);
+            $("#updateName").val(opts.updateName);
+            $("#updateAlert").modal('show');
         }
     };
 })(jQuery);

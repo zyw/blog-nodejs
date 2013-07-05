@@ -8,8 +8,8 @@
 
 var Aclassify = require('../module/aclassify')
     , Alabel = require('../module/alabel')
+    , Article = require('../module/article')
     , Toolkit = require('../module/util')
-    , util = require('util')
     , fs = require('fs')
     , settings = require('../settings');
 
@@ -62,7 +62,7 @@ exports.aclassify = function(req,res){
 exports.warticle = function(req,res){
     Aclassify.aclasifyAll(function(err,acs){
         Alabel.alabelAll(function(err,als){
-            res.render('admin_views/warticle',{acs:acs,als:util.inspect(als)});
+            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
         });
     });
 };
@@ -189,8 +189,7 @@ exports.delclassify = function(req,res){
 //修改文章分类
 exports.updateclassify = function(req,res){
     var _id = req.body._id;
-    var acname = req.body.acname;
-    console.log("id: " + _id + "--name: " + acname);
+    var acname = req.body.updateName;
     Aclassify.update(_id,acname,function(err){
         if(err){
             req.flash('error','修改失败，请稍后再试！');
@@ -207,7 +206,7 @@ exports.addlabel = function(req,res){
     var alname = req.body.alname;
     if(alname.trim() == ""){
         req.flash('error','你为输入有效的分类名称！');
-        return res.redirect('/admin/aclassify');
+        return res.redirect('/admin/label');
     }
     var alabel = new Alabel({alname:alname});
     alabel.save(function(err,docs){
@@ -218,4 +217,60 @@ exports.addlabel = function(req,res){
         return res.redirect('/admin/label');
     });
 };
+//删除文章分类
+exports.dellabel = function(req,res){
+    Alabel.deleById(req.query.id,function(err){
+        if(err){
+            req.flash('error','删除失败，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        req.flash('success','删除成功！');
+        return res.redirect('/admin/label');
+    });
+};
+//修改文章分类
+exports.updatelabel = function(req,res){
+    var _id = req.body._id;
+    var alname = req.body.updateName;
+    Alabel.update(_id,alname,function(err){
+        if(err){
+            req.flash('error','修改失败，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        req.flash('success','修改成功！');
+        return res.redirect('/admin/label');
+    });
+}
+
+/*+++++++++++++++++++文章操作+++++++++++++++++++++++++*/
+
+//添加文章
+exports.addarticle = function(req,res){
+    var article = {
+        title:req.body.articleTitle,
+        content:req.body.content,
+        userId:req.session.user._id,
+        classifyId:req.body.aclassifyId,
+        labelId:req.body.alabelId,
+        createDate:new Date(),
+        imgURL:req.body.imageName,
+        attasURL:req.body.attachName
+    };
+    if(article.title == null || article.title.trim() == ""){
+        req.flash('error','请输入文章标题！');
+        return res.redirect('/admin/warticle');
+    }
+    if(article.content == null || article.content.trim() == ""){
+        req.flash('error','请输入文章内容再发表！');
+        return res.redirect('/admin/warticle');
+    }
+    var article = new Article(article)
+    article.save(function(err,docs){
+        if(err){
+            req.flash('error','添加出错，请稍后重试！');
+            return res.redirect('/admin/warticle');
+        }
+        return res.redirect('/admin/article');
+    });
+}
 
