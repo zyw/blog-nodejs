@@ -4,11 +4,13 @@
  */
 
 var express = require('express')
-  , route = require('./route')
   , http = require('http')
   , path = require('path')
+  , fs = require('fs')
   , MongoStore = require("connect-mongo")(express)
   , settings = require('./settings')
+  , route = require('./route')
+  , middle = require('./module/custom_middle')
   , flash = require('connect-flash');
 
 var app = express();
@@ -20,7 +22,10 @@ app.set('view engine', 'ejs');
 app.use(flash());
 app.use(express.favicon());
 app.use(express.logger('dev'));
-app.use(express.bodyParser({uploadDir:'./temp'}));
+//创建上传的临时文件夹
+app.use(middle.createTempDir({tempURL:settings.uploadtemp}));
+
+app.use(express.bodyParser({uploadDir:settings.uploadtemp}));
 app.use(express.methodOverride());
 app.use(express.cookieParser());
 app.use(express.session({
@@ -32,12 +37,8 @@ app.use(express.session({
     })
 }));
 //利用中间件代替app.dynamicHelpers
-app.use(function(req,res,next){
-    res.locals.success = req.flash('success');
-    res.locals.error = req.flash('error');
-    res.locals.user = req.session.user;
-    next();
-});
+app.use(middle.middleFun());
+
 app.use(app.router);
 app.use(express.static(path.join(__dirname, 'public')));
 

@@ -284,7 +284,9 @@ var imageUploader = {},
         }
         //保存上传的图片
         var imagePath = imgObjs.length ? imgObjs[imgObjs.length-1]._src : "";
-        window.parent.document.getElementById(editor.options.updateImgInputId).value = imagePath;
+        if(editor.options.updateImgInputId){
+            window.parent.document.getElementById(editor.options.updateImgInputId).value = imagePath;
+        }
         insertImage(imgObjs);
         hideFlash();
     }

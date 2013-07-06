@@ -53,6 +53,10 @@ module.exports =function(app){
     app.get('/admin/remark',afterManager.remark);
     app.get('/admin/nav',afterManager.nav);
     app.get('/admin/moldboard',afterManager.moldboard);
+
     app.get('/admin/links',afterManager.links);
+    app.get('/admin/addlinkpage',afterManager.addlinkpage)
+    app.post('/admin/addlink',afterManager.addlink)
+
     app.get('/admin/umanager',afterManager.umanager);
 };

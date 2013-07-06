@@ -1,6 +1,23 @@
 {
   "name": "application-name",
   "version": "0.0.1",
+  "description": "一个使用Node.js + Express + MongoDB开发的博客系统",
+  "keywords": [
+    "Node.js",
+    "Express",
+    "blog",
+    "MongoDB",
+    "博客"
+  ],
+  "repository": {
+     "type": "git",
+     "url": "https://github.com/zyw/blog.git"
+  },
+  "author": {
+     "name": "朱延伟",
+     "email": "zyw090111@163.com",
+     "url": ""
+  },
   "private": true,
   "scripts": {
     "start": "node app.js"

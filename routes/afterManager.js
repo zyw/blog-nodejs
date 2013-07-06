@@ -8,6 +8,7 @@
 
 var Aclassify = require('../module/aclassify')
     , Alabel = require('../module/alabel')
+    , Link = require('../module/link')
     , Article = require('../module/article')
     , Toolkit = require('../module/util')
     , fs = require('fs')
@@ -39,8 +40,8 @@ exports.moldboard = function(req,res){
     res.render('admin_views/moldboard')
 };
 
-exports.links = function(req,res){
-    res.render('admin_views/links')
+exports.addlinkpage = function(req,res){
+    res.render('admin_views/addupdatelink');
 };
 
 exports.umanager = function(req,res){
@@ -74,6 +75,12 @@ exports.label = function(req,res){
             return res.redirect('/admin/index');
         }
         res.render('admin_views/label',{als:als});
+    });
+};
+
+exports.links = function(req,res){
+    Link.linkAll(function(err,links){
+        res.render('admin_views/links',{links:links});
     });
 };
 
@@ -274,3 +281,7 @@ exports.addarticle = function(req,res){
     });
 }
 
+/*++++++++++++++++++++++连接操作+++++++++++++++++++++++++++++++*/
+exports.addlink = function(req,res){
+
+};

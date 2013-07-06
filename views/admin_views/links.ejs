@@ -6,9 +6,119 @@
             <% include includes/lefter %>
         </div>
         <div class="span10" id="content">
-            links
+            <% include includes/error_alert %>
+            <% include includes/success_alert %>
+            <div class="topmenu">
+                <div class="manbtn">
+                    <a id="addlink" href="/admin/addlinkpage" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</a>
+                </div>
+                连接管理
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <colgroup>
+                    <col class="span1">
+                    <col class="span6">
+                    <col class="span1">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>序 号</th>
+                    <th>编 号</th>
+                    <th>连接名称</th>
+                    <th>URL</th>
+                    <th>打开方式</th>
+                    <th>是否可见</th>
+                    <th>描 述</th>
+                    <th>操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="8" style="text-align: center;">
+                            还没有分类数据！
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>
+<script type="text/javascript">
+
+    //$("#addlink").on('click',addUpdateLink);
+
+//    function addUpdateLink(opts){
+//        var options = {
+//           linkLabel :  '添加连接',
+//              action :  '',
+//               '_id' :  '',
+//              number :  '',
+//            linkname :  '',
+//         linkaddress :  '',
+//            opentype :  '',
+//            describe :  ''
+//        };
+//        opts = opts || options;
+//
+//        if(!$("#addupdatelink").length > 0){
+//            var alertHTML = $("<div id='addupdatelink' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='linkLabel' aria-hidden='true'>" +
+//                "<div class='modal-header'>" +
+//                "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>" +
+//                "<h3 id='linkLabel'>" + opts.linkLabel + "</h3> " +
+//                "</div>" +
+//                "<div class='modal-body'>" +
+//                    "<form class='form-horizontal' id='linkForm' action='" + opts.action + "' method='post'>" +
+//                    "<input type='hidden' name='_id' id='_id'>" +
+//                    "<div class='control-group'>" +
+//                    "<label class='control-label' for='number'>序 号：</label>" +
+//                    "<div class='controls'>" +
+//                    "<input type='text' name='number' id='number' placeholder='序 号'>" +
+//                    "</div>" +
+//                    "</div>" +
+//                    "<div class='control-group'>" +
+//                    "<label class='control-label' for='linkname'>连接名称：</label>" +
+//                    "<div class='controls'>" +
+//                    "<input type='text' name='linkname' id='linkname' placeholder='连接名称'>" +
+//                    "</div>" +
+//                    "</div>" +
+//                    "<div class='control-group'>" +
+//                    "<label class='control-label' for='linkaddress'>连接地址：</label>" +
+//                    "<div class='controls'>" +
+//                    "<input type='text' name='linkaddress' id='linkaddress' placeholder='连接地址'>" +
+//                    "</div>" +
+//                    "</div>" +
+//                    "<div class='control-group'>" +
+//                    "<label class='control-label' for='opentype'>打开方式：</label>" +
+//                    "<div class='controls'>" +
+//                    "<select id='opentype' name='opentype'><option value='__blank'>新窗口打开</option><option value='_self'>当前窗口打开</option></select>" +
+//                    "</div>" +
+//                    "</div>" +
+//                    "<div class='control-group'>" +
+//                    "<label class='control-label' for='describe'>描 述：</label>" +
+//                    "<div class='controls'>" +
+//                    "<textarea id='describe' name='describe'></textarea>" +
+//                    "</div>" +
+//                    "</div>" +
+//                "</form>" +
+//                "</div>" +
+//                "<div class='modal-footer'>" +
+//                "<button class='btn btn-primary' id='confirm' data-dismiss='modal' aria-hidden='true'>保 存</button>" +
+//                "<button class='btn' data-dismiss='modal' aria-hidden='true'>取 消</button>" +
+//                "</div>" +
+//                "</div>");
+//            $('body').append(alertHTML);
+//            $('#confirm').on('click',function(){
+//                $("#linkForm").submit();
+//            });
+//        }
+//        $("#_id").val(opts._id);
+//        $("#number").val(opts.number);
+//        $("#linkname").val(opts.linkname);
+//        $("#linkaddress").val(opts.linkaddress);
+//        $("#opentype").val(opts.opentype);
+//        $("#describe").val(opts.describe);
+//        $("#addupdatelink").modal('show');
+//    }
+</script>
 
 <% include includes/footer %>
