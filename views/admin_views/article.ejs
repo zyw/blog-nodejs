@@ -6,7 +6,73 @@
             <% include includes/lefter %>
         </div>
         <div class="span10" id="content">
-            article
+            <% include includes/error_alert %>
+            <% include includes/success_alert %>
+            <div class="topmenu">
+                <div class="manbtn">
+                    <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 写文章</a>
+                </div>
+                文章管理
+            </div>
+            <table class="table table-bordered table-striped table-hover">
+                <colgroup>
+                    <col class="span1">
+                    <col class="span6">
+                    <col class="span1">
+                </colgroup>
+                <thead>
+                <tr>
+                    <th>编 号</th>
+                    <th>标 题</th>
+                    <th>作 者</th>
+                    <th>类 别</th>
+                    <th>标 签</th>
+                    <th>评语数</th>
+                    <th>日 期</th>
+                    <th>操 作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <% if( articles.length ) { %>
+                    <% for(var i = 0; i < articles.length; i++) { %>
+                        <tr>
+                            <td>
+                                <%= articles[i].id %>
+                            </td>
+                            <td>
+                                <%= articles[i].title %>
+                            </td>
+                            <td>
+                                <%= articles[i].userName %>
+                            </td>
+                            <td>
+                                <%= articles[i].classifyId %>
+                            </td>
+                            <td>
+                                <%= articles[i].labelId %>
+                            </td>
+                            <td>
+                                <%= articles[i].remarkcount %>
+                            </td>
+                            <td>
+                                <%= articles[i].createDate %>
+                            </td>
+                            <td>
+                                <a class="btn btn-link" style="padding: 0;">修改</a>
+                                &nbsp;
+                                <a class="btn btn-link" style="padding: 0;">删除</a>
+                            </td>
+                        </tr>
+                    <% } %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="8" style="text-align: center;">
+                                还没有分类数据！
+                            </td>
+                        </tr>
+                <% } %>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

@@ -12,9 +12,9 @@
                 <div class="manbtn">
                     <button id="addlink" onclick="$('#linkForm').submit()"  type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</button>
                 </div>
-                添加连接
+                <%= common.label %>
             </div>
-            <form class='form-horizontal' id='linkForm' action='/admin/addlink' method='post'>
+            <form class='form-horizontal' id='linkForm' action='<%= common.action %>' method='post'>
                 <input type='hidden' name='_id' id='_id'>
                 <div class='control-group'>
                     <label class='control-label' for='number'>序 号：</label>
@@ -62,5 +62,18 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function(){
+        <% if (link) { %>
+            $("#_id").val('<%= link._id %>');
+            $("#number").val('<%= link.number %>');
+            $("#linkname").val('<%= link.linkname %>');
+            $("#linkaddress").val('<%= link.linkaddress %>');
+            $("#opentype").val('<%= link.opentype %>');
+            $("#isvisible").val('<%= link.isvisible %>')
+            $("#describe").val('<%= link.describe %>');
+        <% } %>
+    });
+</script>
 
 <% include includes/footer %>

@@ -64,31 +64,6 @@
 <script type="text/javascript">
     function updateLabel(_id,alname){
         $.myblog.updateInfo({id:_id,updateName:alname,action:'/admin/updatelabel',label:'标签名称'});
-//        if(!$("#updatelabel").length > 0){
-//            var alertHTML = $("<div id='updatelabel' class='modal hide fade' tabindex='-1' role='dialog' aria-labelledby='labelLabel' aria-hidden='true'>" +
-//                    "<div class='modal-header'>" +
-//                    "<button type='button' class='close' data-dismiss='modal' aria-hidden='true'>×</button>" +
-//                    "<h3 id='labelLabel'>修改</h3> " +
-//                    "</div>" +
-//                    "<div class='modal-body'>" +
-//                    "<form id='ulabelForm' action='/admin/updatelabel' method='post'>" +
-//                    "<input type='hidden' name='_id' id='_id'>" +
-//                    "标签名称：<input type='text' name='alname' id='ualname'>" +
-//                    "</form>" +
-//                    "</div>" +
-//                    "<div class='modal-footer'>" +
-//                    "<button class='btn btn-primary' id='confirm' data-dismiss='modal' aria-hidden='true'>确定</button>" +
-//                    "<button class='btn' data-dismiss='modal' aria-hidden='true'>取消</button>" +
-//                    "</div>" +
-//                    "</div>");
-//            $('body').append(alertHTML);
-//            $('#confirm').on('click',function(){
-//                $("#ulabelForm").submit();
-//            });
-//        }
-//        $("#_id").val(_id);
-//        $("#ualname").val(alname);
-//        $("#updatelabel").modal('show');
     }
 </script>
 

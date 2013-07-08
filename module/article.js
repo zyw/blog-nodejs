@@ -18,6 +18,8 @@ function Article(article){
     this.createDate = article.createDate;
     this.imgURL = article.imgURL;
     this.attasURL = article.attasURL;
+    this.articlestatus = article.articlestatus;         //文章状态 目前分：publish(发布)和draft(草稿)两种
+    this.remarkcount = article.remarkcount;             //评述数量
 }
 module.exports = Article;
 
@@ -31,7 +33,9 @@ Article.prototype.save = function(callback){
         labelId:this.labelId,
         createDate:this.createDate,
         imgURL:this.imgURL,
-        attasURL:this.attasURL
+        attasURL:this.attasURL,
+        articlestatus:this.articlestatus,
+        remarkcount:0
     };
     db.collection('article').find().sort({id:-1}).limit(1).toArray(function(err,maxobj){
         if(maxobj.length){
@@ -44,5 +48,14 @@ Article.prototype.save = function(callback){
             }
             return callback(err,docs);
         });
+    });
+};
+Article.optsSearch = function(query,callback){
+    var querys = query || {};
+    db.collection('article').find(querys).toArray(function(err,articles){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,articles);
     });
 };

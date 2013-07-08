@@ -35,8 +35,6 @@ module.exports =function(app){
     app.post('/admin/uploadImage',afterManager.uploadImage);
     app.post('/admin/imgManager',afterManager.imgManager);
     app.post('/admin/attachment',afterManager.attachment);
-    app.post('/admin/saveWarticle',afterManager.saveWarticle);
-
 
     app.get('/admin/article',afterManager.article);
 

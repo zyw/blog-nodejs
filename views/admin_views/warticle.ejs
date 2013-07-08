@@ -10,7 +10,10 @@
             <% include includes/success_alert %>
             <div class="topmenu">
                 <div class="manbtn">
-                    <button id="addwarticle" type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</button>
+                    <button id="savedraft" type="button" class="btn"><i class="icon-plus"></i> 保存到草稿</button>
+                </div>
+                <div class="manbtn">
+                    <button id="publish" type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 发 布</button>
                 </div>
                 写文章
             </div>
@@ -21,6 +24,7 @@
                     <label class="control-label" style="width: 60px;text-align: left;" for="articleTitle">文章标题</label>
                     <div class="controls" style="margin-left: 75px;">
                         <input type="text" class="span4" id="articleTitle" name="articleTitle" placeholder="文章标题">
+                        <input type="hidden" name="articlestatus" id="articlestatus">
                         <input type="hidden" id="imageName" name="imageName">
                         <input type="hidden" id="attachName" name="attachName">
                     </div>
@@ -48,7 +52,12 @@
                         <input type="text" id="alabel" style="width:370px;">
                         <input type="hidden" name="alabelId" id="hiddenAlabel" value="">
                         <script>
-                            $("#addwarticle").on('click',function(){
+                            $("#publish").on('click',function(){
+                                $("#articlestatus").val('publish');
+                                $("#warticleForm").submit();
+                            });
+                            $("#savedraft").on('click',function(){
+                                $("#articlestatus").val('draft');
                                 $("#warticleForm").submit();
                             });
                             $('#alabel').selectize({

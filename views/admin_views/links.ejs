@@ -25,7 +25,7 @@
                     <th>序 号</th>
                     <th>编 号</th>
                     <th>连接名称</th>
-                    <th>URL</th>
+                    <th>连接地址</th>
                     <th>打开方式</th>
                     <th>是否可见</th>
                     <th>描 述</th>
@@ -33,11 +33,44 @@
                 </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td colspan="8" style="text-align: center;">
-                            还没有分类数据！
-                        </td>
-                    </tr>
+                <% if( links.length ) { %>
+                <% for(var i = 0; i < links.length; i++) { %>
+                <tr>
+                    <td>
+                        <%= links[i].number %>
+                    </td>
+                    <td>
+                        <%= links[i].id %>
+                    </td>
+                    <td>
+                        <%= links[i].linkname %>
+                    </td>
+                    <td>
+                        <%= links[i].linkaddress %>
+                    </td>
+                    <td>
+                        <%= links[i].opentype %>
+                    </td>
+                    <td>
+                        <%= links[i].isvisible == 1 ? '是' : '否' %>
+                    </td>
+                    <td>
+                        <%= links[i].describe %>
+                    </td>
+                    <td>
+                        <a class="btn btn-link" href="/admin/addlinkpage?id=<%= links[i]._id %>" style="padding: 0;">修改</a>
+                        &nbsp;
+                        <a class="btn btn-link" style="padding: 0;">删除</a>
+                    </td>
+                </tr>
+                <% } %>
+                <% } else { %>
+                <tr>
+                    <td colspan="3" style="text-align: center;">
+                        还没有分类数据！
+                    </td>
+                </tr>
+                <% } %>
                 </tbody>
             </table>
         </div>

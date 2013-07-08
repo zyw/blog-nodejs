@@ -10,22 +10,14 @@ var Aclassify = require('../module/aclassify')
     , Alabel = require('../module/alabel')
     , Link = require('../module/link')
     , Article = require('../module/article')
+    , User = require('../module/user')
     , Toolkit = require('../module/util')
     , fs = require('fs')
+    , util = require('util')
     , settings = require('../settings');
-
-/*---------------------渲染页面----------------------------------*/
-
-exports.login = function(req,res){
-    res.render('admin_views/login');
-};
 
 exports.index = function(req,res){
     res.render('admin_views/index');
-};
-
-exports.article = function(req,res){
-    res.render('admin_views/article')
 };
 
 exports.remark = function(req,res){
@@ -40,53 +32,16 @@ exports.moldboard = function(req,res){
     res.render('admin_views/moldboard')
 };
 
-exports.addlinkpage = function(req,res){
-    res.render('admin_views/addupdatelink');
-};
-
 exports.umanager = function(req,res){
     res.render('admin_views/umanager')
 };
 
-/*---------------------填充数据加渲染页面-------------------------------*/
-
-exports.aclassify = function(req,res){
-    Aclassify.aclasifyAll(function(err,acs){
-        if(err){
-            req.flash('error',"查询文章分类出错！");
-            return res.redirect('/admin/index');
-        }
-        res.render('admin_views/aclassify',{acs:acs});
-    });
+/*+++++++++++++++++++++用户登录操作++++++++++++++++++++++++++++++++++++++*/
+//跳至登录页面
+exports.login = function(req,res){
+    res.render('admin_views/login');
 };
-
-exports.warticle = function(req,res){
-    Aclassify.aclasifyAll(function(err,acs){
-        Alabel.alabelAll(function(err,als){
-            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
-        });
-    });
-};
-
-exports.label = function(req,res){
-    Alabel.alabelAll(function(err,als){
-        if(err){
-            req.flash('error',"查询文章标签出错！");
-            return res.redirect('/admin/index');
-        }
-        res.render('admin_views/label',{als:als});
-    });
-};
-
-exports.links = function(req,res){
-    Link.linkAll(function(err,links){
-        res.render('admin_views/links',{links:links});
-    });
-};
-
-/*---------------------逻辑处理----------------------------------*/
-
-//用户登录
+//完成用户登录操作
 exports.postlogin = function(req,res){
     Toolkit.login(req,res,{failPage:'/admin/login',successPage:'/admin/index'});
 };
@@ -104,6 +59,165 @@ exports.checking = function(req,res,next){
     next();
 };
 
+/*+++++++++++++++++++文章分类操作+++++++++++++++++++++++++*/
+//查询文章分类信息
+exports.aclassify = function(req,res){
+    Aclassify.aclasifyAll(function(err,acs){
+        if(err){
+            req.flash('error',"查询文章分类出错！");
+            return res.redirect('/admin/index');
+        }
+        res.render('admin_views/aclassify',{acs:acs});
+    });
+};
+//添加文章分类
+exports.addclassify = function(req,res){
+    var acname = req.body.acname;
+    if(acname.trim() == ""){
+        req.flash('error','你为输入有效的分类名称！');
+        return res.redirect('/admin/aclassify');
+    }
+    var aclassify = new Aclassify({acname:acname});
+    aclassify.save(function(err,docs){
+        if(err){
+            req.flash('error','添加错误，请稍后再试！');
+            return res.redirect('/admin/aclassify');
+        }
+        return res.redirect('/admin/aclassify');
+    });
+};
+//删除文章分类
+exports.delclassify = function(req,res){
+    Aclassify.deleById(req.query.id,function(err){
+        if(err){
+            req.flash('error','删除失败，请稍后再试！');
+            return res.redirect('/admin/aclassify');
+        }
+        req.flash('success','删除成功！');
+        return res.redirect('/admin/aclassify');
+    });
+};
+//修改文章分类
+exports.updateclassify = function(req,res){
+    var _id = req.body._id;
+    var acname = req.body.updateName;
+    Aclassify.update(_id,acname,function(err){
+        if(err){
+            req.flash('error','修改失败，请稍后再试！');
+            return res.redirect('/admin/aclassify');
+        }
+        req.flash('success','修改成功！');
+        return res.redirect('/admin/aclassify');
+    });
+}
+
+/*+++++++++++++++++++文章标签操作+++++++++++++++++++++++++*/
+//查询标签信息
+exports.label = function(req,res){
+    Alabel.alabelAll(function(err,als){
+        if(err){
+            req.flash('error',"查询文章标签出错！");
+            return res.redirect('/admin/index');
+        }
+        res.render('admin_views/label',{als:als});
+    });
+};
+
+//添加标签
+exports.addlabel = function(req,res){
+    var alname = req.body.alname;
+    if(alname.trim() == ""){
+        req.flash('error','你为输入有效的分类名称！');
+        return res.redirect('/admin/label');
+    }
+    var alabel = new Alabel({alname:alname});
+    alabel.save(function(err,docs){
+        if(err){
+            req.flash('error','添加错误，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        return res.redirect('/admin/label');
+    });
+};
+//删除文章分类
+exports.dellabel = function(req,res){
+    Alabel.deleById(req.query.id,function(err){
+        if(err){
+            req.flash('error','删除失败，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        req.flash('success','删除成功！');
+        return res.redirect('/admin/label');
+    });
+};
+//修改文章分类
+exports.updatelabel = function(req,res){
+    var _id = req.body._id;
+    var alname = req.body.updateName;
+    Alabel.update(_id,alname,function(err){
+        if(err){
+            req.flash('error','修改失败，请稍后再试！');
+            return res.redirect('/admin/label');
+        }
+        req.flash('success','修改成功！');
+        return res.redirect('/admin/label');
+    });
+}
+
+/*+++++++++++++++++++文章操作++++++++++++++++++++++++++++++++*/
+//跳至文章列表页
+exports.article = function(req,res){
+    Article.optsSearch({},function(err,articles){
+        var userIds = [];
+        for(var key in articles){
+            var userId = "{'_id':'" + articles[key].userId + "'}"
+            userIds.push(userId);
+        }
+        User.userById({$or:[{_id:articles[0].userId},{_id:articles[1].userId}]},function(err,user){
+            console.log(util.inspect(user));
+//            art.userName = user.name;
+//            arts.push(art);
+        });
+        res.render('admin_views/article',{articles:articles});
+    });
+};
+//查询文章分类和标签跳转至写文章页面
+exports.warticle = function(req,res){
+    Aclassify.aclasifyAll(function(err,acs){
+        Alabel.alabelAll(function(err,als){
+            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
+        });
+    });
+};
+//添加文章
+exports.addarticle = function(req,res){
+    var article = {
+        title:req.body.articleTitle,
+        content:req.body.content,
+        userId:req.session.user._id,
+        classifyId:req.body.aclassifyId,
+        labelId:req.body.alabelId,
+        createDate:new Date(),
+        imgURL:req.body.imageName,
+        attasURL:req.body.attachName
+    };
+    if(article.title == null || article.title.trim() == ""){
+        req.flash('error','请输入文章标题！');
+        return res.redirect('/admin/warticle');
+    }
+    if(article.content == null || article.content.trim() == ""){
+        req.flash('error','请输入文章内容再发表！');
+        return res.redirect('/admin/warticle');
+    }
+    var articlevo = new Article(article)
+    articlevo.save(function(err,docs){
+        if(err){
+            req.flash('error','添加出错，请稍后重试！');
+            return res.redirect('/admin/warticle');
+        }
+        return res.redirect('/admin/article');
+    });
+};
 //上传图片
 exports.uploadImage = function(req,res){
     // 获得文件的临时路径
@@ -161,127 +275,57 @@ exports.attachment = function(req,res){
     });
 };
 
-exports.saveWarticle = function(req,res){
-
-};
-
-/*+++++++++++++++++++文章分类操作+++++++++++++++++++++++++*/
-//添加文章分类
-exports.addclassify = function(req,res){
-    var acname = req.body.acname;
-    if(acname.trim() == ""){
-        req.flash('error','你为输入有效的分类名称！');
-        return res.redirect('/admin/aclassify');
-    }
-    var aclassify = new Aclassify({acname:acname});
-    aclassify.save(function(err,docs){
-        if(err){
-            req.flash('error','添加错误，请稍后再试！');
-            return res.redirect('/admin/aclassify');
-        }
-        return res.redirect('/admin/aclassify');
-    });
-};
-//删除文章分类
-exports.delclassify = function(req,res){
-    Aclassify.deleById(req.query.id,function(err){
-        if(err){
-            req.flash('error','删除失败，请稍后再试！');
-            return res.redirect('/admin/aclassify');
-        }
-        req.flash('success','删除成功！');
-        return res.redirect('/admin/aclassify');
-    });
-};
-//修改文章分类
-exports.updateclassify = function(req,res){
-    var _id = req.body._id;
-    var acname = req.body.updateName;
-    Aclassify.update(_id,acname,function(err){
-        if(err){
-            req.flash('error','修改失败，请稍后再试！');
-            return res.redirect('/admin/aclassify');
-        }
-        req.flash('success','修改成功！');
-        return res.redirect('/admin/aclassify');
-    });
-}
-
-/*+++++++++++++++++++文章标签操作+++++++++++++++++++++++++*/
-
-exports.addlabel = function(req,res){
-    var alname = req.body.alname;
-    if(alname.trim() == ""){
-        req.flash('error','你为输入有效的分类名称！');
-        return res.redirect('/admin/label');
-    }
-    var alabel = new Alabel({alname:alname});
-    alabel.save(function(err,docs){
-        if(err){
-            req.flash('error','添加错误，请稍后再试！');
-            return res.redirect('/admin/label');
-        }
-        return res.redirect('/admin/label');
-    });
-};
-//删除文章分类
-exports.dellabel = function(req,res){
-    Alabel.deleById(req.query.id,function(err){
-        if(err){
-            req.flash('error','删除失败，请稍后再试！');
-            return res.redirect('/admin/label');
-        }
-        req.flash('success','删除成功！');
-        return res.redirect('/admin/label');
-    });
-};
-//修改文章分类
-exports.updatelabel = function(req,res){
-    var _id = req.body._id;
-    var alname = req.body.updateName;
-    Alabel.update(_id,alname,function(err){
-        if(err){
-            req.flash('error','修改失败，请稍后再试！');
-            return res.redirect('/admin/label');
-        }
-        req.flash('success','修改成功！');
-        return res.redirect('/admin/label');
-    });
-}
-
-/*+++++++++++++++++++文章操作+++++++++++++++++++++++++*/
-
-//添加文章
-exports.addarticle = function(req,res){
-    var article = {
-        title:req.body.articleTitle,
-        content:req.body.content,
-        userId:req.session.user._id,
-        classifyId:req.body.aclassifyId,
-        labelId:req.body.alabelId,
-        createDate:new Date(),
-        imgURL:req.body.imageName,
-        attasURL:req.body.attachName
-    };
-    if(article.title == null || article.title.trim() == ""){
-        req.flash('error','请输入文章标题！');
-        return res.redirect('/admin/warticle');
-    }
-    if(article.content == null || article.content.trim() == ""){
-        req.flash('error','请输入文章内容再发表！');
-        return res.redirect('/admin/warticle');
-    }
-    var article = new Article(article)
-    article.save(function(err,docs){
-        if(err){
-            req.flash('error','添加出错，请稍后重试！');
-            return res.redirect('/admin/warticle');
-        }
-        return res.redirect('/admin/article');
-    });
-}
-
 /*++++++++++++++++++++++连接操作+++++++++++++++++++++++++++++++*/
+//跳至添加连接页面
+exports.addlinkpage = function(req,res){
+    var id = req.query.id;
+    if(id){
+        Link.linkById(id,function(err,link){
+            res.render('admin_views/addupdatelink',{common:{label:'修改连接',action:'#'},link:link});
+        });
+    }else{
+        res.render('admin_views/addupdatelink',{common:{label:'添加连接',action:'/admin/addlink'},link:null});
+    }
+};
+//查询连接信息跳至连接列表页
+exports.links = function(req,res){
+    Link.linkAll(function(err,links){
+        if(err){
+            req.flash('error',"查询连接信息出错！");
+            return res.redirect('/admin/index');
+        }
+        res.render('admin_views/links',{links:links});
+    });
+};
+//添加连接
 exports.addlink = function(req,res){
-
+   var link = {
+       number:req.body.number,
+       linkname:req.body.linkname,
+       linkaddress:req.body.linkaddress,
+       opentype:req.body.opentype,
+       isvisible:req.body.isvisible,
+       describe:req.body.describe
+   };
+   if(!link.number || !link.number.trim()){
+       req.flash('error','请输入序号！');
+       return res.redirect('/admin/addlinkpage');
+   }
+   if(!link.linkname || !link.linkname.trim()){
+       req.flash('error','请输入连接名称！');
+       return res.redirect('/admin/addlinkpage');
+   }
+   if(!link.linkaddress || !link.linkaddress.trim()){
+       req.flash('error','请输入连接地址！');
+       return res.redirect('/admin/addlinkpage');
+    }
+    var linkvo = new Link(link);
+    linkvo.save(function(err,link){
+        if(err){
+            req.flash('error','添加连接出错，请稍后再试！');
+            return res.redirect('/admin/addlinkpage')
+        }
+        req.flash('success','添加连接成功！');
+        return res.redirect('/admin/links');
+    });
 };

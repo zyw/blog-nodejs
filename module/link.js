@@ -35,7 +35,7 @@ Link.prototype.save = function(callback){
             link.id = maxobj[0].id + 1;
         }
 
-        db.collection('link').insert(article,function(err,docs){
+        db.collection('link').insert(link,function(err,docs){
             if(err){
                 return callback(err,null);
             }
@@ -45,10 +45,19 @@ Link.prototype.save = function(callback){
 };
 
 Link.linkAll = function(callback){
-    db.collection('link').find().toArray(function(err,acs){
+    db.collection('link').find().toArray(function(err,links){
         if(err){
             return callback(err,null);
         }
-        return callback(err,acs);
+        return callback(err,links);
+    });
+};
+//通过_id查询单个连接
+Link.linkById = function(id,callback){
+    db.collection('link').findById(id,function(err,link){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,link);
     });
 };
