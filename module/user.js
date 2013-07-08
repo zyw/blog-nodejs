@@ -50,7 +50,7 @@ User.findByName = function(name,callback){
 };
 
 User.userById = function(id,callback){
-    db.collection('user').findById(id,function(err,user){
+    db.collection('user').find(id).toArray(function(err,user){
         if(err){
             return callback(err,null);
         }

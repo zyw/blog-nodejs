@@ -170,10 +170,11 @@ exports.article = function(req,res){
     Article.optsSearch({},function(err,articles){
         var userIds = [];
         for(var key in articles){
-            var userId = "{'_id':'" + articles[key].userId + "'}"
-            userIds.push(userId);
+            //var userId = "{'_id':'" + articles[key].userId + "'}"
+            var userId = articles[key].userId;
+            userIds.push(articles[key].userId);
         }
-        User.userById({$or:[{_id:articles[0].userId},{_id:articles[1].userId}]},function(err,user){
+        User.userById({_id:{$in:[ObjectID.createFromHexString(articles[0].userId)]}},function(err,user){
             console.log(util.inspect(user));
 //            art.userName = user.name;
 //            arts.push(art);
