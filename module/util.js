@@ -9,6 +9,7 @@
 var crypto = require('crypto')
     , settings = require('../settings')
     , fs = require('fs')
+    , db = require('./db')
     , util = require('util')
     , User = require("./user");
 
@@ -73,6 +74,29 @@ Toolkit.inspect = function(objs,attrs){
     }
     return "[" + result.join(',') + "]";
 };
+
+Toolkit.toId = function(id){
+    return db.toId(id);
+};
+
+Toolkit.dateFormat = function(date){
+    var nowDate = new Date();
+    var oneDay = 1 * 24 * 60 * 60 * 1000;
+    var timeDiffer = nowDate.getTime() - date.getTime();
+    if(timeDiffer < oneDay){
+        var temp = new Date(timeDiffer);
+        var hours = temp.getUTCHours();
+        var minutes = temp.getUTCMinutes();
+        if(hours < 1)
+            return minutes + "分钟前";
+        return hours + "小时" + minutes + "分钟前";
+    }else{
+        return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
+                + " " + date.getHours() + ":" + date.getMinutes();
+//            全日期时间 : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
+//            + " " + date.getHours() + ":" + date.getMinutes()
+    }
+}
 
 Toolkit.login = function(req,res,opts){
     var name = req.body.inputName,

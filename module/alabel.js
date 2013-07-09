@@ -57,4 +57,14 @@ Alabel.update = function(_id,alname,callback){
         }
         return callback(null);
     });
+};
+
+//根据ID数组查询列表
+Alabel.labelsByIds = function(ids,callback){
+    db.collection('alabel').find({_id:{'$in':ids}}).toArray(function(err,labels){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,labels);
+    })
 }

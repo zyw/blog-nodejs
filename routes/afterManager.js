@@ -169,17 +169,73 @@ exports.updatelabel = function(req,res){
 exports.article = function(req,res){
     Article.optsSearch({},function(err,articles){
         var userIds = [];
-        for(var key in articles){
-            //var userId = "{'_id':'" + articles[key].userId + "'}"
-            var userId = articles[key].userId;
-            userIds.push(articles[key].userId);
-        }
-        User.userById({_id:{$in:[ObjectID.createFromHexString(articles[0].userId)]}},function(err,user){
-            console.log(util.inspect(user));
-//            art.userName = user.name;
-//            arts.push(art);
+        var aclassifyIds = [];
+        var labelIds = [];
+        articles.forEach(function(article){
+            userIds.push(Toolkit.toId(article.userId));
+            var aid = article.classifyId;
+            if(aid.length == 24){
+                aclassifyIds.push(Toolkit.toId(aid));
+            }
+            var lid = article.labelId;
+            if(lid){
+                if(lid.indexOf(',')){
+                    lid.split(',').forEach(function(item){
+                        labelIds.push(Toolkit.toId(item));
+                    });
+                }else{
+                    labelIds.push(Toolkit.toId(lid));
+                }
+            }
         });
-        res.render('admin_views/article',{articles:articles});
+        User.usersByIds(userIds,function(err,users){
+            var userInfo = {};
+            users.forEach(function(user){
+                userInfo[user._id] = user.name;
+            });
+            Aclassify.aclassifysByIds(aclassifyIds,function(err,aclassifys){
+                var aclassifyInfo = {};
+                aclassifyInfo['0'] = "未分类";
+
+                aclassifys.forEach(function(aclassify){
+                   aclassifyInfo[aclassify._id] = aclassify.acname;
+                });
+                Alabel.labelsByIds(labelIds,function(err,labels){
+                    //console.log(util.inspect(labelIds) + "/////////" + util.inspect(labels));
+                    var labelInfo = {};
+                    labels.forEach(function(label){
+                        labelInfo[label._id] = label.alname;
+                    });
+                    var result = [];
+                    articles.forEach(function(article){
+                        //更改时间显示字段
+                        article.createDate = Toolkit.dateFormat(article.createDate);
+                        //更改显示用户名
+                        article.userId = userInfo[article.userId];
+                        //更改显示分类
+                        article.classifyId = aclassifyInfo[article.classifyId];
+                        //更改显示标签
+                        var lids = article.labelId;
+                        if(lids){
+                            if(lids.indexOf(',')){
+                                var labels = [];
+                                var tempLabelIds = lids.split(',');
+                                tempLabelIds.forEach(function(labelId){
+                                    labels.push(labelInfo[labelId]);
+                                });
+                                article.labelId = labels.join(',');
+                            }else{
+                                article.labelId = labelInfo[article.labelId];
+                            }
+                        }else{
+                            article.labelId = "无";
+                        }
+                        result.push(article);
+                    });
+                    res.render('admin_views/article',{articles:result});
+                });
+            });
+        });
     });
 };
 //查询文章分类和标签跳转至写文章页面

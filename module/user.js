@@ -49,8 +49,8 @@ User.findByName = function(name,callback){
     });
 };
 
-User.userById = function(id,callback){
-    db.collection('user').find(id).toArray(function(err,user){
+User.usersByIds = function(ids,callback){
+    db.collection('user').find({_id:{'$in':ids}},{_id:1,name:1}).toArray(function(err,user){
         if(err){
             return callback(err,null);
         }

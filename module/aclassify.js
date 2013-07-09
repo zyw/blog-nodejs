@@ -56,4 +56,13 @@ Aclassify.update = function(_id,acname,callback){
         }
         return callback(null);
     });
+};
+
+Aclassify.aclassifysByIds = function(ids,callback){
+    db.collection('aclassify').find({_id:{'$in':ids}}).toArray(function(err,aclassifys){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,aclassifys);
+    });
 }
