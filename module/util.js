@@ -74,11 +74,11 @@ Toolkit.inspect = function(objs,attrs){
     }
     return "[" + result.join(',') + "]";
 };
-
+//转换字符串类型为ObjectId类型
 Toolkit.toId = function(id){
     return db.toId(id);
 };
-
+//格式化输出发布文章的日期时间
 Toolkit.dateFormat = function(date){
     var nowDate = new Date();
     var oneDay = 1 * 24 * 60 * 60 * 1000;
@@ -96,6 +96,16 @@ Toolkit.dateFormat = function(date){
 //            全日期时间 : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
 //            + " " + date.getHours() + ":" + date.getMinutes()
     }
+};
+
+Toolkit.page = function(total,currentPage){
+    //每一页显示多少行在settions中配置
+    var rows = settings.afterPage;
+    //根据总记录数每一页显示多少行计算总页数
+    var totalPages = Math.floor((total+rows-1)/rows);
+    //计算起始行
+    var startRow = (currentPage - 1) * rows;
+    return {totalPages:totalPages,startRow:startRow,rows:rows,currentPage:currentPage};
 }
 
 Toolkit.login = function(req,res,opts){

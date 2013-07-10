@@ -50,12 +50,21 @@ Article.prototype.save = function(callback){
         });
     });
 };
-Article.optsSearch = function(query,callback){
+Article.optsSearch = function(query,opts,callback){
     var querys = query || {};
-    db.collection('article').find(querys).toArray(function(err,articles){
+    db.collection('article').find(querys).skip(opts.startRow).limit(opts.rows).sort({createDate:-1}).toArray(function(err,articles){
         if(err){
             return callback(err,null);
         }
         return callback(err,articles);
+    });
+};
+Article.rows = function(query,callback){
+    var querys = query || {};
+    db.collection('article').count(querys,function(err,rows){
+        if(err){
+            callback(err,0);
+        }
+        callback(err,rows);
     });
 };

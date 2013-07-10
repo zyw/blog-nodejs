@@ -33,7 +33,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                <% if( articles.length ) { %>
+                <% if( articles && articles.length ) { %>
                     <% for(var i = 0; i < articles.length; i++) { %>
                         <tr>
                             <td>
@@ -73,6 +73,62 @@
                 <% } %>
                 </tbody>
             </table>
+            <div class='pagination pagination-right' current_page='<%= pageInfo.currentPage %>'>
+                <ul>
+                    <%
+                        var base = '/admin/article';
+                        var base_url = base + (base.lastIndexOf('?') < 0 ? '?' : '&') + 'cp=';
+                    %>
+                    <% if (pageInfo.currentPage == 1) { %>
+                        <li class='disabled'><a>«</a></li>
+                    <% } else { %>
+                        <li><a href="<%= base_url %>1">«</a></li>
+                    <% } %>
+
+                    <%
+                        var page_start = pageInfo.currentPage - 2 > 0 ? pageInfo.currentPage - 2 : 1;
+                        var page_end = page_start + 4 >= pageInfo.totalPages ? pageInfo.totalPages : page_start + 4;
+                    %>
+
+                    <% if (page_start > 1) { %>
+                        <li><a>...</a></li>
+                    <% } %>
+
+                    <% for(var i = page_start; i <= page_end; i++) { %>
+                        <% if (i === pageInfo.currentPage) { %>
+                            <li class='disabled'><a><%= i %></a></li>
+                        <% } else { %>
+                            <li><a href='<%= base_url + i %>'><%= i %></a></li>
+                        <% } %>
+                    <% } %>
+
+                    <% if (page_end < pageInfo.totalPages ) { %>
+                        <li><a>...</a></li>
+                    <% } %>
+
+                    <% if (pageInfo.currentPage == pageInfo.totalPages) { %>
+                        <li class='disabled'><a>»</a></li>
+                    <% } else { %>
+                        <li><a href='<%= base_url + pageInfo.totalPages %>'>»</a></li>
+                    <% } %>
+                </ul>
+            </div>
+            <script>
+                $(document).ready(function () {
+                    var $nav = $('.pagination');
+                    var current_page = $nav.attr('current_page');
+                    if (current_page) {
+                        $nav.find('li').each(function(){
+                            var $li = $(this);
+                            var $a = $li.find('a');
+                            if($a.html() == current_page){
+                                $li.addClass('active');
+                                $a.removeAttr('href');
+                            }
+                        });
+                    }
+                });
+            </script>
         </div>
     </div>
 </div>

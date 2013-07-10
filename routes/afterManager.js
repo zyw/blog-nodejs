@@ -167,72 +167,82 @@ exports.updatelabel = function(req,res){
 /*+++++++++++++++++++文章操作++++++++++++++++++++++++++++++++*/
 //跳至文章列表页
 exports.article = function(req,res){
-    Article.optsSearch({},function(err,articles){
-        var userIds = [];
-        var aclassifyIds = [];
-        var labelIds = [];
-        articles.forEach(function(article){
-            userIds.push(Toolkit.toId(article.userId));
-            var aid = article.classifyId;
-            if(aid.length == 24){
-                aclassifyIds.push(Toolkit.toId(aid));
-            }
-            var lid = article.labelId;
-            if(lid){
-                if(lid.indexOf(',')){
-                    lid.split(',').forEach(function(item){
-                        labelIds.push(Toolkit.toId(item));
-                    });
-                }else{
-                    labelIds.push(Toolkit.toId(lid));
-                }
-            }
-        });
-        User.usersByIds(userIds,function(err,users){
-            var userInfo = {};
-            users.forEach(function(user){
-                userInfo[user._id] = user.name;
-            });
-            Aclassify.aclassifysByIds(aclassifyIds,function(err,aclassifys){
-                var aclassifyInfo = {};
-                aclassifyInfo['0'] = "未分类";
+    var currentPage = req.query.cp || 1;
+    Article.rows({},function(err,rows){
+        var pageInfo = Toolkit.page(rows,currentPage);
+        Article.optsSearch({},pageInfo,function(err,articles){
 
-                aclassifys.forEach(function(aclassify){
-                   aclassifyInfo[aclassify._id] = aclassify.acname;
+            if(!articles){
+                req.flash('error','没有文章信息，可能数据库没有数据！');
+                return res.render('admin_views/article',{articles:null,pageInfo:null});
+            }
+
+            var userIds = [];           //用户ID集合
+            var aclassifyIds = [];      //文章分类ID集合
+            var labelIds = [];          //文章标签ID集合
+            articles.forEach(function(article){
+                userIds.push(Toolkit.toId(article.userId));
+                var aid = article.classifyId;
+                if(aid.length == 24){
+                    aclassifyIds.push(Toolkit.toId(aid));
+                }
+                var lid = article.labelId;
+                if(lid){
+                    if(lid.indexOf(',')){
+                        lid.split(',').forEach(function(item){
+                            labelIds.push(Toolkit.toId(item));
+                        });
+                    }else{
+                        labelIds.push(Toolkit.toId(lid));
+                    }
+                }
+            });
+            User.usersByIds(userIds,function(err,users){
+                var userInfo = {};
+                users.forEach(function(user){
+                    userInfo[user._id] = user.name;
                 });
-                Alabel.labelsByIds(labelIds,function(err,labels){
-                    //console.log(util.inspect(labelIds) + "/////////" + util.inspect(labels));
-                    var labelInfo = {};
-                    labels.forEach(function(label){
-                        labelInfo[label._id] = label.alname;
+                Aclassify.aclassifysByIds(aclassifyIds,function(err,aclassifys){
+                    var aclassifyInfo = {};
+                    aclassifyInfo['0'] = "未分类";
+
+                    aclassifys.forEach(function(aclassify){
+                        aclassifyInfo[aclassify._id] = aclassify.acname;
                     });
-                    var result = [];
-                    articles.forEach(function(article){
-                        //更改时间显示字段
-                        article.createDate = Toolkit.dateFormat(article.createDate);
-                        //更改显示用户名
-                        article.userId = userInfo[article.userId];
-                        //更改显示分类
-                        article.classifyId = aclassifyInfo[article.classifyId];
-                        //更改显示标签
-                        var lids = article.labelId;
-                        if(lids){
-                            if(lids.indexOf(',')){
-                                var labels = [];
-                                var tempLabelIds = lids.split(',');
-                                tempLabelIds.forEach(function(labelId){
-                                    labels.push(labelInfo[labelId]);
-                                });
-                                article.labelId = labels.join(',');
+                    Alabel.labelsByIds(labelIds,function(err,labels){
+                        //console.log(util.inspect(labelIds) + "/////////" + util.inspect(labels));
+                        var labelInfo = {};
+                        labels.forEach(function(label){
+                            labelInfo[label._id] = label.alname;
+                        });
+                        var result = [];
+                        articles.forEach(function(article){
+                            //更改时间显示字段
+                            article.createDate = Toolkit.dateFormat(article.createDate);
+                            //更改显示用户名
+                            article.userId = userInfo[article.userId];
+                            //更改显示分类
+                            article.classifyId = aclassifyInfo[article.classifyId];
+                            //更改显示标签
+                            var lids = article.labelId;
+                            if(lids){
+                                if(lids.indexOf(',')){
+                                    var labels = [];
+                                    var tempLabelIds = lids.split(',');
+                                    tempLabelIds.forEach(function(labelId){
+                                        labels.push(labelInfo[labelId]);
+                                    });
+                                    article.labelId = labels.join(',');
+                                }else{
+                                    article.labelId = labelInfo[article.labelId];
+                                }
                             }else{
-                                article.labelId = labelInfo[article.labelId];
+                                article.labelId = "无";
                             }
-                        }else{
-                            article.labelId = "无";
-                        }
-                        result.push(article);
+                            result.push(article);
+                        });
+                        res.render('admin_views/article',{articles:result,pageInfo:pageInfo});
                     });
-                    res.render('admin_views/article',{articles:result});
                 });
             });
         });
@@ -256,6 +266,7 @@ exports.addarticle = function(req,res){
         labelId:req.body.alabelId,
         createDate:new Date(),
         imgURL:req.body.imageName,
+        articlestatus:req.body.articlestatus,
         attasURL:req.body.attachName
     };
     if(article.title == null || article.title.trim() == ""){

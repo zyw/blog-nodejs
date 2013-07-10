@@ -14,5 +14,6 @@ module.exports = {
     commonPath:'./public',          //基本路径供上传时使用
     imgaffix:'/ulfs/acimgs/',       //上传图片的路径
     attach:'/ulfs/attachs/',        //上传附件的路径
-    uploadtemp:'./temp'             //上传文件的临时目录
+    uploadtemp:'./temp',            //上传文件的临时目录
+    afterPage:10                   //后台每页显示的条数
 };
