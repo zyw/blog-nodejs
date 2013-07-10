@@ -105,7 +105,7 @@ Toolkit.page = function(total,currentPage){
     var totalPages = Math.floor((total+rows-1)/rows);
     //计算起始行
     var startRow = (currentPage - 1) * rows;
-    return {totalPages:totalPages,startRow:startRow,rows:rows,currentPage:currentPage};
+    return {totalPages:totalPages,startRow:startRow,rows:rows,currentPage:currentPage,total:total};
 }
 
 Toolkit.login = function(req,res,opts){

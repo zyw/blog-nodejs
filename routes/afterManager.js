@@ -170,13 +170,19 @@ exports.updatelabel = function(req,res){
 exports.article = function(req,res){
     //获得当前页
     var currentPage = req.query.cp || 1;
+    var ispQuery = req.query.isp ? {articlestatus:req.query.isp} : {};
+    var queryConent = req.query.queryContent;
+    if(queryConent){
+        ispQuery['$or'] = [{ "title" : new RegExp("^"+queryConent+".*$")}, { "content" : new RegExp("^"+queryConent+".*$")}];
+        //ispQuery['content'] = queryConent;
+    }
 
     var proxy = new Eventproxy();
-    var events = ['rows','articles','users','aclassifys','labels'];
-    proxy.assign(events,function(rows,articles,users,aclassifys,labels){
+    var events = ['rows','articles','users','aclassifys','labels','publish','draft'];
+    proxy.assign(events,function(rows,articles,users,aclassifys,labels,publish,draft){
         if(!articles){
             req.flash('error','没有文章信息，可能数据库没有数据！');
-            return res.render('admin_views/article',{articles:null,pageInfo:null});
+            return res.render('admin_views/article',{articles:null,pageInfo:null,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
         }
 
         var userInfo = {};
@@ -219,13 +225,15 @@ exports.article = function(req,res){
             }
             result.push(article);
         });
-        res.render('admin_views/article',{articles:result,pageInfo:rows});
+        rows.publish = publish;
+        rows.draft = draft;
+        res.render('admin_views/article',{articles:result,pageInfo:rows,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
     });
     proxy.fail(function(err){
         req.flash('error','查询文章列表异常，请查找原因！');
-        return res.render('admin_views/article',{articles:null,pageInfo:null});
+        return res.render('admin_views/article',{articles:null,pageInfo:null,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
     });
-    Article.rows({},proxy.done(function(rows){
+    Article.rows(ispQuery,proxy.done(function(rows){
         if(!rows){
             proxy.emit('rows',0);
             proxy.emit('articles',null);
@@ -236,7 +244,7 @@ exports.article = function(req,res){
         //获取分页信息
         var pageInfo = Toolkit.page(rows,currentPage);
         proxy.emit('rows',pageInfo);
-        Article.optsSearch({},pageInfo,proxy.done(function(articles){
+        Article.optsSearch(ispQuery,pageInfo,proxy.done(function(articles){
             if(!articles){
                 proxy.emit('articles',null);
                 proxy.emit('users',[]);
@@ -271,6 +279,8 @@ exports.article = function(req,res){
             Aclassify.aclassifysByIds(aclassifyIds,proxy.done('aclassifys'));
 
             Alabel.labelsByIds(labelIds,proxy.done('labels'));
+            Article.rows({articlestatus:'publish'},proxy.done('publish'));
+            Article.rows({articlestatus:'draft'},proxy.done('draft'));
         }));
     }));
 //    Article.rows({},function(err,rows){

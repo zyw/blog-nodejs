@@ -12,7 +12,22 @@
                 <div class="manbtn">
                     <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 写文章</a>
                 </div>
+                <div class="manbtn">
+                    <form class="form-search" method="get" action="/admin/article">
+                        <input type="text" name="queryContent" value="<%= queryConent %>" class="input-medium">
+                        <button type="submit" class="btn">查询</button>
+                    </form>
+                </div>
                 文章管理
+                <% if (pageInfo){ %>
+                    <a href="/admin/article" class="btn btn-link">全部(<%= pageInfo.total %>)</a>
+                    <a href="/admin/article?isp=publish" class="btn btn-link">已发布(<%= pageInfo.publish %>)</a>
+                    <a href="/admin/article?isp=draft" class="btn btn-link">草稿箱(<%= pageInfo.draft %>)</a>
+                <% } else { %>
+                    <a class="btn btn-link">全部(0)</a>
+                    <a class="btn btn-link">已发布(0)</a>
+                    <a class="btn btn-link">草稿箱(0)</a>
+                <% } %>
             </div>
             <table class="table table-bordered table-striped table-hover">
                 <colgroup>
@@ -77,8 +92,7 @@
                 <div class='pagination pagination-right' current_page='<%= pageInfo.currentPage %>'>
                     <ul>
                         <%
-                            var base = '/admin/article';
-                            var base_url = base + (base.lastIndexOf('?') < 0 ? '?' : '&') + 'cp=';
+                            var base_url = baseurl + (baseurl.lastIndexOf('?') < 0 ? '?' : '&') + 'cp=';
                         %>
                         <% if (pageInfo.currentPage == 1) { %>
                             <li class='disabled'><a>«</a></li>
