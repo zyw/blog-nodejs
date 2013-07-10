@@ -13,6 +13,7 @@ var Aclassify = require('../module/aclassify')
     , User = require('../module/user')
     , Toolkit = require('../module/util')
     , fs = require('fs')
+    , eventproxy = require('eventproxy')
     , util = require('util')
     , settings = require('../settings');
 

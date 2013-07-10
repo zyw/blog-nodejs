@@ -27,6 +27,7 @@
     "ejs": "*",
     "mongoskin":"*",
     "connect-mongo":"*",
-    "connect-flash":"*"
+    "connect-flash":"*",
+    "eventproxy":"*"
   }
 }
