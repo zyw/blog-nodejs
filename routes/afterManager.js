@@ -13,7 +13,7 @@ var Aclassify = require('../module/aclassify')
     , User = require('../module/user')
     , Toolkit = require('../module/util')
     , fs = require('fs')
-    , eventproxy = require('eventproxy')
+    , Eventproxy = require('eventproxy')
     , util = require('util')
     , settings = require('../settings');
 
@@ -168,15 +168,82 @@ exports.updatelabel = function(req,res){
 /*+++++++++++++++++++文章操作++++++++++++++++++++++++++++++++*/
 //跳至文章列表页
 exports.article = function(req,res){
+    //获得当前页
     var currentPage = req.query.cp || 1;
-    Article.rows({},function(err,rows){
-        var pageInfo = Toolkit.page(rows,currentPage);
-        Article.optsSearch({},pageInfo,function(err,articles){
 
-            if(!articles){
-                req.flash('error','没有文章信息，可能数据库没有数据！');
-                return res.render('admin_views/article',{articles:null,pageInfo:null});
+    var proxy = new Eventproxy();
+    var events = ['rows','articles','users','aclassifys','labels'];
+    proxy.assign(events,function(rows,articles,users,aclassifys,labels){
+        if(!articles){
+            req.flash('error','没有文章信息，可能数据库没有数据！');
+            return res.render('admin_views/article',{articles:null,pageInfo:null});
+        }
+
+        var userInfo = {};
+        var aclassifyInfo = {'0':"未分类"};
+        var labelInfo = {};
+        users.forEach(function(user){
+            userInfo[user._id] = user.name;
+        });
+
+        aclassifys.forEach(function(aclassify){
+            aclassifyInfo[aclassify._id] = aclassify.acname;
+        });
+
+        labels.forEach(function(label){
+            labelInfo[label._id] = label.alname;
+        });
+        var result = [];
+        articles.forEach(function(article){
+            //更改时间显示字段
+            article.createDate = Toolkit.dateFormat(article.createDate);
+            //更改显示用户名
+            article.userId = userInfo[article.userId];
+            //更改显示分类
+            article.classifyId = aclassifyInfo[article.classifyId];
+            //更改显示标签
+            var lids = article.labelId;
+            if(lids){
+                if(lids.indexOf(',')){
+                    var labels = [];
+                    var tempLabelIds = lids.split(',');
+                    tempLabelIds.forEach(function(labelId){
+                        labels.push(labelInfo[labelId]);
+                    });
+                    article.labelId = labels.join(',');
+                }else{
+                    article.labelId = labelInfo[article.labelId];
+                }
+            }else{
+                article.labelId = "无";
             }
+            result.push(article);
+        });
+        res.render('admin_views/article',{articles:result,pageInfo:rows});
+    });
+    proxy.fail(function(err){
+        req.flash('error','查询文章列表异常，请查找原因！');
+        return res.render('admin_views/article',{articles:null,pageInfo:null});
+    });
+    Article.rows({},proxy.done(function(rows){
+        if(!rows){
+            proxy.emit('rows',0);
+            proxy.emit('articles',null);
+            proxy.emit('users',[]);
+            proxy.emit('aclassifys',[]);
+            proxy.emit('labels',[]);
+        }
+        //获取分页信息
+        var pageInfo = Toolkit.page(rows,currentPage);
+        proxy.emit('rows',pageInfo);
+        Article.optsSearch({},pageInfo,proxy.done(function(articles){
+            if(!articles){
+                proxy.emit('articles',null);
+                proxy.emit('users',[]);
+                proxy.emit('aclassifys',[]);
+                proxy.emit('labels',[]);
+            }
+            proxy.emit('articles',articles);
 
             var userIds = [];           //用户ID集合
             var aclassifyIds = [];      //文章分类ID集合
@@ -198,64 +265,114 @@ exports.article = function(req,res){
                     }
                 }
             });
-            User.usersByIds(userIds,function(err,users){
-                var userInfo = {};
-                users.forEach(function(user){
-                    userInfo[user._id] = user.name;
-                });
-                Aclassify.aclassifysByIds(aclassifyIds,function(err,aclassifys){
-                    var aclassifyInfo = {};
-                    aclassifyInfo['0'] = "未分类";
 
-                    aclassifys.forEach(function(aclassify){
-                        aclassifyInfo[aclassify._id] = aclassify.acname;
-                    });
-                    Alabel.labelsByIds(labelIds,function(err,labels){
-                        //console.log(util.inspect(labelIds) + "/////////" + util.inspect(labels));
-                        var labelInfo = {};
-                        labels.forEach(function(label){
-                            labelInfo[label._id] = label.alname;
-                        });
-                        var result = [];
-                        articles.forEach(function(article){
-                            //更改时间显示字段
-                            article.createDate = Toolkit.dateFormat(article.createDate);
-                            //更改显示用户名
-                            article.userId = userInfo[article.userId];
-                            //更改显示分类
-                            article.classifyId = aclassifyInfo[article.classifyId];
-                            //更改显示标签
-                            var lids = article.labelId;
-                            if(lids){
-                                if(lids.indexOf(',')){
-                                    var labels = [];
-                                    var tempLabelIds = lids.split(',');
-                                    tempLabelIds.forEach(function(labelId){
-                                        labels.push(labelInfo[labelId]);
-                                    });
-                                    article.labelId = labels.join(',');
-                                }else{
-                                    article.labelId = labelInfo[article.labelId];
-                                }
-                            }else{
-                                article.labelId = "无";
-                            }
-                            result.push(article);
-                        });
-                        res.render('admin_views/article',{articles:result,pageInfo:pageInfo});
-                    });
-                });
-            });
-        });
-    });
+            User.usersByIds(userIds,proxy.done('users'));
+
+            Aclassify.aclassifysByIds(aclassifyIds,proxy.done('aclassifys'));
+
+            Alabel.labelsByIds(labelIds,proxy.done('labels'));
+        }));
+    }));
+//    Article.rows({},function(err,rows){
+//        var pageInfo = Toolkit.page(rows,currentPage);
+//        Article.optsSearch({},pageInfo,function(err,articles){
+//
+//            if(!articles){
+//                req.flash('error','没有文章信息，可能数据库没有数据！');
+//                return res.render('admin_views/article',{articles:null,pageInfo:null});
+//            }
+//
+//            var userIds = [];           //用户ID集合
+//            var aclassifyIds = [];      //文章分类ID集合
+//            var labelIds = [];          //文章标签ID集合
+//            articles.forEach(function(article){
+//                userIds.push(Toolkit.toId(article.userId));
+//                var aid = article.classifyId;
+//                if(aid.length == 24){
+//                    aclassifyIds.push(Toolkit.toId(aid));
+//                }
+//                var lid = article.labelId;
+//                if(lid){
+//                    if(lid.indexOf(',')){
+//                        lid.split(',').forEach(function(item){
+//                            labelIds.push(Toolkit.toId(item));
+//                        });
+//                    }else{
+//                        labelIds.push(Toolkit.toId(lid));
+//                    }
+//                }
+//            });
+//            User.usersByIds(userIds,function(err,users){
+//                var userInfo = {};
+//                users.forEach(function(user){
+//                    userInfo[user._id] = user.name;
+//                });
+//                Aclassify.aclassifysByIds(aclassifyIds,function(err,aclassifys){
+//                    var aclassifyInfo = {};
+//                    aclassifyInfo['0'] = "未分类";
+//
+//                    aclassifys.forEach(function(aclassify){
+//                        aclassifyInfo[aclassify._id] = aclassify.acname;
+//                    });
+//                    Alabel.labelsByIds(labelIds,function(err,labels){
+//                        //console.log(util.inspect(labelIds) + "/////////" + util.inspect(labels));
+//                        var labelInfo = {};
+//                        labels.forEach(function(label){
+//                            labelInfo[label._id] = label.alname;
+//                        });
+//                        var result = [];
+//                        articles.forEach(function(article){
+//                            //更改时间显示字段
+//                            article.createDate = Toolkit.dateFormat(article.createDate);
+//                            //更改显示用户名
+//                            article.userId = userInfo[article.userId];
+//                            //更改显示分类
+//                            article.classifyId = aclassifyInfo[article.classifyId];
+//                            //更改显示标签
+//                            var lids = article.labelId;
+//                            if(lids){
+//                                if(lids.indexOf(',')){
+//                                    var labels = [];
+//                                    var tempLabelIds = lids.split(',');
+//                                    tempLabelIds.forEach(function(labelId){
+//                                        labels.push(labelInfo[labelId]);
+//                                    });
+//                                    article.labelId = labels.join(',');
+//                                }else{
+//                                    article.labelId = labelInfo[article.labelId];
+//                                }
+//                            }else{
+//                                article.labelId = "无";
+//                            }
+//                            result.push(article);
+//                        });
+//                        res.render('admin_views/article',{articles:result,pageInfo:pageInfo});
+//                    });
+//                });
+//            });
+//        });
+//    });
 };
 //查询文章分类和标签跳转至写文章页面
 exports.warticle = function(req,res){
-    Aclassify.aclasifyAll(function(err,acs){
-        Alabel.alabelAll(function(err,als){
-            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
-        });
+    var eventProxy = new Eventproxy();
+    eventProxy.assign('acs','als',function(acs,als){
+        res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
     });
+
+    eventProxy.fail(function(err){
+        req.flash('error','查询文章分类或标签异常，请查找原因！');
+        return res.redirect('/admin/index');
+    });
+
+    Aclassify.aclasifyAll(eventProxy.done('acs'));
+    Alabel.alabelAll(eventProxy.done('als'));
+
+//    Aclassify.aclasifyAll(function(err,acs){
+//        Alabel.alabelAll(function(err,als){
+//            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
+//        });
+//    });
 };
 //添加文章
 exports.addarticle = function(req,res){
