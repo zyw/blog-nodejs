@@ -25,6 +25,10 @@ module.exports =function(app){
     //包含admin的访问目录
     app.all('/admin/*',afterManager.checking);
 
+    app.get('/admin',function(req,res){
+        res.redirect('/admin/index');
+    });
+
     app.get('/admin/login',afterManager.login);
     app.post('/admin/postlogin',afterManager.postlogin);
 
@@ -37,6 +41,7 @@ module.exports =function(app){
     app.post('/admin/attachment',afterManager.attachment);
 
     app.get('/admin/article',afterManager.article);
+    app.get('/admin/delarticle',afterManager.delArticleById);
 
     app.get('/admin/aclassify',afterManager.aclassify);
     app.get("/admin/delclassify",afterManager.delclassify);

@@ -105,8 +105,17 @@ Toolkit.page = function(total,currentPage){
     var totalPages = Math.floor((total+rows-1)/rows);
     //计算起始行
     var startRow = (currentPage - 1) * rows;
-    return {totalPages:totalPages,startRow:startRow,rows:rows,currentPage:currentPage,total:total};
-}
+    return {totalPages:totalPages,startRow:startRow,rows:rows,currentPage:currentPage};
+};
+
+//去除分页参数
+Toolkit.revmoecp = function(originalUrl){
+    var index = originalUrl.indexOf('cp=');
+    if(index > 0){
+        return originalUrl.substring(0,index-1);
+    }
+    return originalUrl;
+};
 
 Toolkit.login = function(req,res,opts){
     var name = req.body.inputName,

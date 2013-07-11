@@ -59,6 +59,16 @@ Article.optsSearch = function(query,opts,callback){
         return callback(err,articles);
     });
 };
+
+Article.findById = function(id,callback){
+    db.collection('article').findById(id,function(err,article){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,article);
+    });
+};
+
 Article.rows = function(query,callback){
     var querys = query || {};
     db.collection('article').count(querys,function(err,rows){
@@ -66,5 +76,13 @@ Article.rows = function(query,callback){
             callback(err,0);
         }
         callback(err,rows);
+    });
+};
+Article.deleteyId = function(id,callback){
+    db.collection('article').removeById(id,function(err){
+        if(err){
+            return callback(err);
+        }
+        return callback(null);
     });
 };

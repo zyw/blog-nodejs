@@ -15,11 +15,11 @@
                 <div class="manbtn">
                     <button id="publish" type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 发 布</button>
                 </div>
-                写文章
+                <%= common.label %>
             </div>
             <script type="text/javascript" charset="utf-8" src="/after/ueditor/ueditor.config.js"></script>
             <script type="text/javascript" charset="utf-8" src="/after/ueditor/ueditor.all.js"></script>
-            <form id="warticleForm" class="form-horizontal" method="post" action="/admin/addarticle">
+            <form id="warticleForm" class="form-horizontal" method="post" action="<%= common.action %>">
                 <div class="control-group">
                     <label class="control-label" style="width: 60px;text-align: left;" for="articleTitle">文章标题</label>
                     <div class="controls" style="margin-left: 75px;">
@@ -32,7 +32,7 @@
                 <script id="content" name="content" type="text/plain" style="height:350px;">
                 </script>
                 <script type="text/javascript">
-                    var ue = UE.getEditor('content');
+
                 </script>
                 <div>&nbsp;</div>
                 <div class="control-group">
@@ -51,39 +51,58 @@
                     <div class="controls" style="margin-left: 75px;">
                         <input type="text" id="alabel" style="width:370px;">
                         <input type="hidden" name="alabelId" id="hiddenAlabel" value="">
-                        <script>
-                            $("#publish").on('click',function(){
-                                $("#articlestatus").val('publish');
-                                $("#warticleForm").submit();
-                            });
-                            $("#savedraft").on('click',function(){
-                                $("#articlestatus").val('draft');
-                                $("#warticleForm").submit();
-                            });
-                            $('#alabel').selectize({
-                                plugins: ['remove_button'],
-                                delimiter: ',',
-                                persist: false,
-                                valueField:'_id',
-                                labelField:'alname',
-                                maxItems:5,
-                                options:<%=als %>,
-                                create: function(input) {
-                                    return {
-                                        value: input,
-                                        text: input
-                                    }
-                                },
-                                onChange:function(value){
-                                    $('#hiddenAlabel').val(value);
-                                }
-                            });
-                        </script>
                     </div>
                 </div>
             </form>
         </div>
     </div>
 </div>
-
+<script type="text/javascript">
+    var ue = UE.getEditor('content');
+    $("#publish").on('click',function(){
+        $("#articlestatus").val('publish');
+        $("#warticleForm").submit();
+    });
+    $("#savedraft").on('click',function(){
+        $("#articlestatus").val('draft');
+        $("#warticleForm").submit();
+    });
+    var $select = $('#alabel').selectize({
+        plugins: ['remove_button'],
+        delimiter: ',',
+        persist: false,
+        valueField:'_id',
+        labelField:'alname',
+        maxItems:5,
+        options:<%=als %>,
+        create: function(input) {
+            return {
+                value: input,
+                text: input
+            }
+        },
+        onChange:function(value){
+            $('#hiddenAlabel').val(value);
+        }
+    });
+    <% if (article) { %>
+        $("#articleTitle").val('<%= article.title %>');
+        $("#imageName").val('<%= article.imgURL%>');
+        $("#attachName").val('<%= article.attasURL%>');
+        $("#aclassify").val('<%= article.classifyId%>');
+        $("#hiddenAlabel").val('<%= article.labelId%>');
+        var opts = '<%= article.labelId %>';
+        if(opts.indexOf(',') > 0){
+            var args = opts.split(',');
+            for(var i = 0; i< args.length; i++){
+                $select[0].selectize.addItem(args[i]);
+            }
+        }else{
+            $select[0].selectize.addItem(opts);
+        }
+        ue.ready(function(){
+            ue.setContent('<%= article.content%>');
+        });
+    <% } %>
+</script>
 <% include includes/footer %>

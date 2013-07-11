@@ -173,16 +173,20 @@ exports.article = function(req,res){
     var ispQuery = req.query.isp ? {articlestatus:req.query.isp} : {};
     var queryConent = req.query.queryContent;
     if(queryConent){
-        ispQuery['$or'] = [{ "title" : new RegExp("^"+queryConent+".*$")}, { "content" : new RegExp("^"+queryConent+".*$")}];
-        //ispQuery['content'] = queryConent;
+        ispQuery['$or'] = [{ "title" : new RegExp("^.*"+queryConent+".*$")}, { "content" : new RegExp("^.*"+queryConent+".*$")}];
     }
 
     var proxy = new Eventproxy();
-    var events = ['rows','articles','users','aclassifys','labels','publish','draft'];
-    proxy.assign(events,function(rows,articles,users,aclassifys,labels,publish,draft){
+    var events = ['rows','articles','users','aclassifys','labels','allrows','publish','draft'];
+    proxy.assign(events,function(rows,articles,users,aclassifys,labels,allrows,publish,draft){
         if(!articles){
             req.flash('error','没有文章信息，可能数据库没有数据！');
-            return res.render('admin_views/article',{articles:null,pageInfo:null,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
+            return res.render('admin_views/article',
+                {articles:null
+                 ,pageInfo:null
+                 ,baseurl:null
+                 ,rows:{allrows:allrows,publish:publish,draft:draft}
+                 ,queryConent:(queryConent ? queryConent : '')});
         }
 
         var userInfo = {};
@@ -225,14 +229,24 @@ exports.article = function(req,res){
             }
             result.push(article);
         });
-        rows.publish = publish;
-        rows.draft = draft;
-        res.render('admin_views/article',{articles:result,pageInfo:rows,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
+        res.render('admin_views/article',
+            {articles:result
+                ,pageInfo:rows
+                ,baseurl:Toolkit.revmoecp(req.originalUrl)
+                ,rows:{allrows:allrows,publish:publish,draft:draft}
+                ,queryConent:(queryConent ? queryConent : '')
+            });
     });
     proxy.fail(function(err){
         req.flash('error','查询文章列表异常，请查找原因！');
-        return res.render('admin_views/article',{articles:null,pageInfo:null,baseurl:req.originalUrl,queryConent:(queryConent ? queryConent : '')});
+        return res.render('admin_views/article',
+            {articles:null
+                ,pageInfo:null
+                ,baseurl:null
+                ,rows:null
+                ,queryConent:(queryConent ? queryConent : '')});
     });
+
     Article.rows(ispQuery,proxy.done(function(rows){
         if(!rows){
             proxy.emit('rows',0);
@@ -279,10 +293,12 @@ exports.article = function(req,res){
             Aclassify.aclassifysByIds(aclassifyIds,proxy.done('aclassifys'));
 
             Alabel.labelsByIds(labelIds,proxy.done('labels'));
-            Article.rows({articlestatus:'publish'},proxy.done('publish'));
-            Article.rows({articlestatus:'draft'},proxy.done('draft'));
         }));
     }));
+    Article.rows({},proxy.done('allrows'));
+    Article.rows({articlestatus:'publish'},proxy.done('publish'));
+    Article.rows({articlestatus:'draft'},proxy.done('draft'));
+
 //    Article.rows({},function(err,rows){
 //        var pageInfo = Toolkit.page(rows,currentPage);
 //        Article.optsSearch({},pageInfo,function(err,articles){
@@ -365,10 +381,28 @@ exports.article = function(req,res){
 };
 //查询文章分类和标签跳转至写文章页面
 exports.warticle = function(req,res){
+
+    var id = req.query.id;
     var eventProxy = new Eventproxy();
-    eventProxy.assign('acs','als',function(acs,als){
-        res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
-    });
+    if(id){
+        eventProxy.assign('article','acs','als',function(article,acs,als){
+            res.render('admin_views/warticle',{
+                common:{label:'修改文章',action:'#'}
+                ,article:article
+                ,acs:acs
+                ,als:Toolkit.inspect(als,['_id','alname'])
+            });
+        });
+        Article.findById(id,eventProxy.done('article'));
+    }else{
+        eventProxy.assign('acs','als',function(acs,als){
+            res.render('admin_views/warticle',{
+                common:{label:'写文章',action:'/admin/addarticle'}
+                ,article:null
+                ,acs:acs
+                ,als:Toolkit.inspect(als,['_id','alname'])});
+        });
+    }
 
     eventProxy.fail(function(err){
         req.flash('error','查询文章分类或标签异常，请查找原因！');
@@ -377,12 +411,6 @@ exports.warticle = function(req,res){
 
     Aclassify.aclasifyAll(eventProxy.done('acs'));
     Alabel.alabelAll(eventProxy.done('als'));
-
-//    Aclassify.aclasifyAll(function(err,acs){
-//        Alabel.alabelAll(function(err,als){
-//            res.render('admin_views/warticle',{acs:acs,als:Toolkit.inspect(als,['_id','alname'])});
-//        });
-//    });
 };
 //添加文章
 exports.addarticle = function(req,res){
@@ -414,6 +442,19 @@ exports.addarticle = function(req,res){
         return res.redirect('/admin/article');
     });
 };
+
+exports.delArticleById = function(req,res){
+    var id = req.query.id;
+    Article.deleteyId(id,function(err){
+        if(err){
+            req.flash('error','删除文章错误！');
+            return res.redirect('/admin/article')
+        }
+        req.flash('success','文章删除成功！');
+        return res.redirect('/admin/article');
+    });
+};
+
 //上传图片
 exports.uploadImage = function(req,res){
     // 获得文件的临时路径
