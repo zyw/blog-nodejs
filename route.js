@@ -58,8 +58,10 @@ module.exports =function(app){
     app.get('/admin/moldboard',afterManager.moldboard);
 
     app.get('/admin/links',afterManager.links);
-    app.get('/admin/addlinkpage',afterManager.addlinkpage)
-    app.post('/admin/addlink',afterManager.addlink)
+    app.get('/admin/addlinkpage',afterManager.addlinkpage);
+    app.get('/admin/dellink',afterManager.delLinkById);
+    app.post('/admin/addlink',afterManager.addlink);
+    app.post('/admin/updatelink',afterManager.updateLinkById);
 
     app.get('/admin/umanager',afterManager.umanager);
 };

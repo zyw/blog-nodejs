@@ -24,15 +24,16 @@
                     <label class="control-label" style="width: 60px;text-align: left;" for="articleTitle">文章标题</label>
                     <div class="controls" style="margin-left: 75px;">
                         <input type="text" class="span4" id="articleTitle" name="articleTitle" placeholder="文章标题">
+                        <input type="hidden" id="articleId" name="articleId">
                         <input type="hidden" name="articlestatus" id="articlestatus">
                         <input type="hidden" id="imageName" name="imageName">
                         <input type="hidden" id="attachName" name="attachName">
                     </div>
                 </div>
                 <script id="content" name="content" type="text/plain" style="height:350px;">
-                </script>
-                <script type="text/javascript">
-
+                    <% if (article) { %>
+                        <%- article.content -%>
+                    <% } %>
                 </script>
                 <div>&nbsp;</div>
                 <div class="control-group">
@@ -86,6 +87,7 @@
         }
     });
     <% if (article) { %>
+        $("#articleId").val('<%= article._id %>')
         $("#articleTitle").val('<%= article.title %>');
         $("#imageName").val('<%= article.imgURL%>');
         $("#attachName").val('<%= article.attasURL%>');
@@ -100,9 +102,6 @@
         }else{
             $select[0].selectize.addItem(opts);
         }
-        ue.ready(function(){
-            ue.setContent('<%= article.content%>');
-        });
     <% } %>
 </script>
 <% include includes/footer %>

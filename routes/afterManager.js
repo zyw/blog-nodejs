@@ -386,6 +386,7 @@ exports.warticle = function(req,res){
     var eventProxy = new Eventproxy();
     if(id){
         eventProxy.assign('article','acs','als',function(article,acs,als){
+            console.log(article.content);
             res.render('admin_views/warticle',{
                 common:{label:'修改文章',action:'#'}
                 ,article:article
@@ -518,7 +519,7 @@ exports.addlinkpage = function(req,res){
     var id = req.query.id;
     if(id){
         Link.linkById(id,function(err,link){
-            res.render('admin_views/addupdatelink',{common:{label:'修改连接',action:'#'},link:link});
+            res.render('admin_views/addupdatelink',{common:{label:'修改连接',action:'/admin/updatelink'},link:link});
         });
     }else{
         res.render('admin_views/addupdatelink',{common:{label:'添加连接',action:'/admin/addlink'},link:null});
@@ -536,33 +537,65 @@ exports.links = function(req,res){
 };
 //添加连接
 exports.addlink = function(req,res){
-   var link = {
-       number:req.body.number,
-       linkname:req.body.linkname,
-       linkaddress:req.body.linkaddress,
-       opentype:req.body.opentype,
-       isvisible:req.body.isvisible,
-       describe:req.body.describe
-   };
-   if(!link.number || !link.number.trim()){
-       req.flash('error','请输入序号！');
-       return res.redirect('/admin/addlinkpage');
-   }
-   if(!link.linkname || !link.linkname.trim()){
-       req.flash('error','请输入连接名称！');
-       return res.redirect('/admin/addlinkpage');
-   }
-   if(!link.linkaddress || !link.linkaddress.trim()){
-       req.flash('error','请输入连接地址！');
-       return res.redirect('/admin/addlinkpage');
-    }
-    var linkvo = new Link(link);
-    linkvo.save(function(err,link){
+    _addUpdateLink(req,res);
+};
+
+exports.updateLinkById = function(req,res){
+    _addUpdateLink(req,res);
+};
+
+exports.delLinkById = function(req,res){
+    var id = req.query.id;
+    Link.delLinkById(id,function(err){
         if(err){
-            req.flash('error','添加连接出错，请稍后再试！');
-            return res.redirect('/admin/addlinkpage')
+            req.flash('error','删除连接出差！');
+            return res.redirect('/admin/links');
         }
-        req.flash('success','添加连接成功！');
+        req.flash('success','删除连接成功！');
         return res.redirect('/admin/links');
     });
 };
+
+function _addUpdateLink(req,res){
+    var id = req.body._id;
+    var link = {
+        number:req.body.number,
+        linkname:req.body.linkname,
+        linkaddress:req.body.linkaddress,
+        opentype:req.body.opentype,
+        isvisible:req.body.isvisible,
+        describe:req.body.describe
+    };
+    if(!link.number || !link.number.trim()){
+        req.flash('error','请输入序号！');
+        return res.redirect('/admin/addlinkpage');
+    }
+    if(!link.linkname || !link.linkname.trim()){
+        req.flash('error','请输入连接名称！');
+        return res.redirect('/admin/addlinkpage');
+    }
+    if(!link.linkaddress || !link.linkaddress.trim()){
+        req.flash('error','请输入连接地址！');
+        return res.redirect('/admin/addlinkpage');
+    }
+    var linkvo = new Link(link);
+    if(id){
+        linkvo.updateLinkById(id,function(err,link){
+            if(err){
+                req.flash('error','修改连接出错！');
+                return res.redirect('/admin/addlinkpage?id='+id);
+            }
+            req.flash('success','修改连接成功！');
+            return res.redirect('/admin/links');
+        });
+    }else{
+        linkvo.save(function(err,link){
+            if(err){
+                req.flash('error','添加连接出错，请稍后再试！');
+                return res.redirect('/admin/addlinkpage')
+            }
+            req.flash('success','添加连接成功！');
+            return res.redirect('/admin/links');
+        });
+    }
+}

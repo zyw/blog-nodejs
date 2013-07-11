@@ -60,7 +60,7 @@
                     <td>
                         <a class="btn btn-link" href="/admin/addlinkpage?id=<%= links[i]._id %>" style="padding: 0;">修改</a>
                         &nbsp;
-                        <a class="btn btn-link" style="padding: 0;">删除</a>
+                        <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellink?id=<%= links[i]._id %>')" style="padding: 0;">删除</a>
                     </td>
                 </tr>
                 <% } %>

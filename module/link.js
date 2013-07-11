@@ -61,3 +61,28 @@ Link.linkById = function(id,callback){
         return callback(err,link);
     });
 };
+
+Link.delLinkById = function(id,callback){
+    db.collection('link').removeById(id,function(err){
+        if(err){
+            return callback(err);
+        }
+        return callback(null);
+    });
+};
+Link.prototype.updateLinkById = function(id,callback){
+    var link = {
+        number:this.number,
+        linkname:this.linkname,
+        linkaddress:this.linkaddress,
+        opentype:this.opentype,
+        isvisible:this.isvisible,
+        describe:this.describe
+    };
+    db.collection('link').updateById(id,{$set:link},function(err,link){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(null,link);
+    });
+};
