@@ -54,6 +54,12 @@ Toolkit.filesPath = function(path){
     });
 };
 
+/*
+ * @param objs  需要遍历的对象数组
+ * @param attrs 取出的字段数组
+ * @return 返回新的对象数组
+ * 遍历对象数组，取出需要的字段组成新的对象数组
+ * */
 Toolkit.inspect = function(objs,attrs){
     if(objs == null)
         return "[]";
@@ -81,26 +87,30 @@ Toolkit.toId = function(id){
 //格式化输出发布文章的日期时间
 Toolkit.dateFormat = function(date){
     var nowDate = new Date();
-    var oneDay = 1 * 24 * 60 * 60 * 1000;
+    var oneHours = 1000 * 60 * 60;
+    var oneDay = oneHours * 1 * 24;
     var timeDiffer = nowDate.getTime() - date.getTime();
-    if(timeDiffer < oneDay){
+    if(timeDiffer < oneHours){
+        var temp = new Date(timeDiffer);
+        var minutes = temp.getUTCMinutes();
+        return minutes + "分钟前";
+    }else if(timeDiffer < oneDay){
         var temp = new Date(timeDiffer);
         var hours = temp.getUTCHours();
-        var minutes = temp.getUTCMinutes();
-        if(hours < 1)
-            return minutes + "分钟前";
-        return hours + "小时" + minutes + "分钟前";
-    }else{
-        return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
-                + " " + date.getHours() + ":" + date.getMinutes();
+        return hours + "小时前";
+    }else if(timeDiffer < (oneDay * 2)){
+              return "昨天 " + date.getHours() + ":" + date.getMinutes();
 //            全日期时间 : date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
 //            + " " + date.getHours() + ":" + date.getMinutes()
+    }else{
+        return date.getFullYear() + "-" + (date.getMonth()+1) + "-" + date.getDate()
+            + " " + date.getHours() + ":" + date.getMinutes();
     }
 };
 
-Toolkit.page = function(total,currentPage){
+Toolkit.page = function(total,currentPage,pagerows){
     //每一页显示多少行在settions中配置
-    var rows = settings.afterPage;
+    var rows = pagerows || settings.afterPage;
     //根据总记录数每一页显示多少行计算总页数
     var totalPages = Math.floor((total+rows-1)/rows);
     //计算起始行
@@ -115,6 +125,20 @@ Toolkit.revmoecp = function(originalUrl){
         return originalUrl.substring(0,index-1);
     }
     return originalUrl;
+};
+
+Toolkit.revmoeTag = function(origContent){
+    var result = origContent || "";
+    return result.replace(/<.*?>/ig,"");
+};
+
+Toolkit.truncation = function(origContent){
+    var trunNum = settings.truncation;
+    var content = origContent || "";
+    var len = content.length;
+    if(len < trunNum)
+        return origContent;
+    return origContent.substring(0,trunNum) + "...";
 };
 
 Toolkit.login = function(req,res,opts){

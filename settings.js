@@ -15,5 +15,7 @@ module.exports = {
     imgaffix:'/ulfs/acimgs/',       //上传图片的路径
     attach:'/ulfs/attachs/',        //上传附件的路径
     uploadtemp:'./temp',            //上传文件的临时目录
-    afterPage:10                   //后台每页显示的条数
+    afterPage:10,                   //后台每页显示的条数
+    beforePage:15,                  //前台首页每一页显示的条数
+    truncation:200                  //首页显示文章内容的字符数，也就是显示多少字符
 };

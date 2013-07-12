@@ -8,8 +8,7 @@
 
 var afterManager = require('./routes/afterManager')
     , routes = require('./routes/')
-    , user = require('./routes/user')
-    , pagesRender = require('./routes/pagesRender');
+    , user = require('./routes/user');
 
 module.exports =function(app){
     app.get('/', routes.index);
@@ -36,6 +35,7 @@ module.exports =function(app){
 
     app.get('/admin/warticle',afterManager.warticle);
     app.post('/admin/addarticle',afterManager.addarticle);
+    app.post('/admin/updatearticle',afterManager.updateArticleById);
     app.post('/admin/uploadImage',afterManager.uploadImage);
     app.post('/admin/imgManager',afterManager.imgManager);
     app.post('/admin/attachment',afterManager.attachment);

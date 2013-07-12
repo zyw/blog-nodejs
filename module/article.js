@@ -86,3 +86,21 @@ Article.deleteyId = function(id,callback){
         return callback(null);
     });
 };
+
+Article.prototype.updateArticleById = function(id,callback){
+    var article = {
+        title:this.title,
+        content:this.content,
+        classifyId:this.classifyId,
+        labelId:this.labelId,
+        imgURL:this.imgURL,
+        attasURL:this.attasURL,
+        articlestatus:this.articlestatus
+    };
+    db.collection('article').updateById(id,{$set:article},function(err,article){
+        if(err){
+            callback(err,null);
+        }
+        callback(err,article);
+    });
+};

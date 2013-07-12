@@ -388,7 +388,7 @@ exports.warticle = function(req,res){
         eventProxy.assign('article','acs','als',function(article,acs,als){
             console.log(article.content);
             res.render('admin_views/warticle',{
-                common:{label:'修改文章',action:'#'}
+                common:{label:'修改文章',action:'/admin/updatearticle'}
                 ,article:article
                 ,acs:acs
                 ,als:Toolkit.inspect(als,['_id','alname'])
@@ -415,6 +415,15 @@ exports.warticle = function(req,res){
 };
 //添加文章
 exports.addarticle = function(req,res){
+    _addUpdateArticle(req,res);
+};
+//修改文章
+exports.updateArticleById = function(req,res){
+    _addUpdateArticle(req,res);
+};
+
+function _addUpdateArticle(req,res){
+    var id = req.body.articleId;
     var article = {
         title:req.body.articleTitle,
         content:req.body.content,
@@ -435,13 +444,26 @@ exports.addarticle = function(req,res){
         return res.redirect('/admin/warticle');
     }
     var articlevo = new Article(article)
-    articlevo.save(function(err,docs){
-        if(err){
-            req.flash('error','添加出错，请稍后重试！');
-            return res.redirect('/admin/warticle');
-        }
-        return res.redirect('/admin/article');
-    });
+
+    if(id){
+        articlevo.updateArticleById(id,function(err,article){
+            if(err){
+                req.flash('error','修改出错，请稍后重试！');
+                return res.redirect('/admin/warticle?id=' + id);
+            }
+            req.flash('success','修改成功！');
+            return res.redirect('/admin/article');
+        });
+    }else{
+        articlevo.save(function(err,docs){
+            if(err){
+                req.flash('error','添加出错，请稍后重试！');
+                return res.redirect('/admin/warticle');
+            }
+            req.flash('success','添加成功！');
+            return res.redirect('/admin/article');
+        });
+    }
 };
 
 exports.delArticleById = function(req,res){
