@@ -1,66 +1,57 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="topmenu">
+    <form method="post" action="/admin/addlabel" style="margin: 0 0;">
+        <div class="manbtn">
+            <button id="addalname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
         </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="topmenu">
-                <form method="post" action="/admin/addlabel" style="margin: 0 0;">
-                    <div class="manbtn">
-                        <button id="addalname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
-                    </div>
-                    <div class="manbtn">
-                        <input id="alname" class="span2" type="text" name="alname" placeholder="标签名">
-                    </div>
-                </form>
-                标签管理
-            </div>
-            <table class="table table-bordered table-striped table-hover">
-                <colgroup>
-                    <col class="span1">
-                    <col class="span6">
-                    <col class="span1">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>编 号</th>
-                    <th>标签名称</th>
-                    <th>操 作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if( als.length ) { %>
-                    <% for(var i = 0; i < als.length; i++) { %>
-                    <tr>
-                        <td>
-                            <%= als[i].id %>
-                        </td>
-                        <td>
-                            <%= als[i].alname %>
-                        </td>
-                        <td>
-                            <a class="btn btn-link" style="padding: 0;" onclick="updateLabel('<%= als[i]._id %>','<%= als[i].alname %>')">修改</a>
-                            &nbsp;
-                            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellabel?id=<%= als[i]._id %>')" style="padding: 0;">删除</a>
-                        </td>
-                    </tr>
-                    <% } %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            还没有分类数据！
-                        </td>
-                    </tr>
-                <% } %>
-                </tbody>
-            </table>
+        <div class="manbtn">
+            <input id="alname" class="span2" type="text" name="alname" placeholder="标签名">
         </div>
-    </div>
+    </form>
+    标签管理
 </div>
+<table class="table table-bordered table-striped table-hover">
+    <colgroup>
+        <col class="span1">
+        <col class="span6">
+        <col class="span1">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>编 号</th>
+        <th>标签名称</th>
+        <th>操 作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if( als.length ) { %>
+        <% for(var i = 0; i < als.length; i++) { %>
+        <tr>
+            <td>
+                <%= als[i].id %>
+            </td>
+            <td>
+                <%= als[i].alname %>
+            </td>
+            <td>
+                <a class="btn btn-link" style="padding: 0;" onclick="updateLabel('<%= als[i]._id %>','<%= als[i].alname %>')">修改</a>
+                &nbsp;
+                <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellabel?id=<%= als[i]._id %>')" style="padding: 0;">删除</a>
+            </td>
+        </tr>
+        <% } %>
+    <% } else { %>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                还没有分类数据！
+            </td>
+        </tr>
+    <% } %>
+    </tbody>
+</table>
 <script type="text/javascript">
     function updateLabel(_id,alname){
         $.myblog.updateInfo({id:_id,updateName:alname,action:'/admin/updatelabel',label:'标签名称'});

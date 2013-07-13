@@ -1,154 +1,145 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
-        </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="topmenu">
-                <div class="manbtn">
-                    <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 写文章</a>
-                </div>
-                文章管理
-            </div>
-            <div class="topmenu">
-                <% if (rows){ %>
-                    <a href="/admin/article" class="btn btn-link">全部(<%= rows.allrows %>)</a>
-                    <a href="/admin/article?isp=publish" class="btn btn-link">已发布(<%= rows.publish %>)</a>
-                    <a href="/admin/article?isp=draft" class="btn btn-link">草稿箱(<%= rows.draft %>)</a>
-                <% } else { %>
-                    <a class="btn btn-link">全部(0)</a>
-                    <a class="btn btn-link">已发布(0)</a>
-                    <a class="btn btn-link">草稿箱(0)</a>
-                <% } %>
-                <div class="manbtn">
-                    <form class="form-search" method="get" action="/admin/article">
-                        <input type="text" name="queryContent" value="<%= queryConent %>" class="input-medium">
-                        <button type="submit" class="btn">查询</button>
-                    </form>
-                </div>
-            </div>
-            <table class="table table-bordered table-striped table-hover">
-                <colgroup>
-                    <col class="span1">
-                    <col class="span6">
-                    <col class="span1">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>编 号</th>
-                    <th>标 题</th>
-                    <th>作 者</th>
-                    <th>分 类</th>
-                    <th>标 签</th>
-                    <th>评语数</th>
-                    <th>日 期</th>
-                    <th>操 作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if( articles && articles.length ) { %>
-                    <% for(var i = 0; i < articles.length; i++) { %>
-                        <tr>
-                            <td>
-                                <%= articles[i].id %>
-                            </td>
-                            <td>
-                                <%= articles[i].title %>
-                            </td>
-                            <td>
-                                <%= articles[i].userId %>
-                            </td>
-                            <td>
-                                <%= articles[i].classifyId %>
-                            </td>
-                            <td>
-                                <%= articles[i].labelId %>
-                            </td>
-                            <td>
-                                <%= articles[i].remarkcount %>
-                            </td>
-                            <td>
-                                <%= articles[i].createDate %>
-                            </td>
-                            <td>
-                                <a class="btn btn-link" href="/admin/warticle?id=<%= articles[i]._id %>" style="padding: 0;">修改</a>
-                                &nbsp;
-                                <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delarticle?id=<%= articles[i]._id %>')" style="padding: 0;">删除</a>
-                            </td>
-                        </tr>
-                    <% } %>
-                    <% } else { %>
-                        <tr>
-                            <td colspan="8" style="text-align: center;">
-                                还没有分类数据！
-                            </td>
-                        </tr>
-                <% } %>
-                </tbody>
-            </table>
-            <% if (pageInfo){ %>
-                <div class='pagination pagination-right' current_page='<%= pageInfo.currentPage %>'>
-                    <ul>
-                        <%
-                            var base_url = baseurl + (baseurl.lastIndexOf('?') < 0 ? '?' : '&') + 'cp=';
-                        %>
-                        <% if (pageInfo.currentPage == 1) { %>
-                            <li class='disabled'><a>«</a></li>
-                        <% } else { %>
-                            <li><a href="<%= base_url %>1">«</a></li>
-                        <% } %>
-
-                        <%
-                            var page_start = pageInfo.currentPage - 2 > 0 ? pageInfo.currentPage - 2 : 1;
-                            var page_end = page_start + 4 >= pageInfo.totalPages ? pageInfo.totalPages : page_start + 4;
-                        %>
-
-                        <% if (page_start > 1) { %>
-                            <li><a>...</a></li>
-                        <% } %>
-
-                        <% for(var i = page_start; i <= page_end; i++) { %>
-                            <% if (i === pageInfo.currentPage) { %>
-                                <li class='disabled'><a><%= i %></a></li>
-                            <% } else { %>
-                                <li><a href='<%= base_url + i %>'><%= i %></a></li>
-                            <% } %>
-                        <% } %>
-
-                        <% if (page_end < pageInfo.totalPages ) { %>
-                            <li><a>...</a></li>
-                        <% } %>
-
-                        <% if (pageInfo.currentPage == pageInfo.totalPages) { %>
-                            <li class='disabled'><a>»</a></li>
-                        <% } else { %>
-                            <li><a href='<%= base_url + pageInfo.totalPages %>'>»</a></li>
-                        <% } %>
-                    </ul>
-                </div>
-                <script>
-                    $(document).ready(function () {
-                        var $nav = $('.pagination');
-                        var current_page = $nav.attr('current_page');
-                        if (current_page) {
-                            $nav.find('li').each(function(){
-                                var $li = $(this);
-                                var $a = $li.find('a');
-                                if($a.html() == current_page){
-                                    $li.addClass('active');
-                                    $a.removeAttr('href');
-                                }
-                            });
-                        }
-                    });
-                </script>
-            <% } %>
-        </div>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="topmenu">
+    <div class="manbtn">
+        <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 写文章</a>
+    </div>
+    文章管理
+</div>
+<div class="topmenu">
+    <% if (rows){ %>
+        <a href="/admin/article" class="btn btn-link">全部(<%= rows.allrows %>)</a>
+        <a href="/admin/article?isp=publish" class="btn btn-link">已发布(<%= rows.publish %>)</a>
+        <a href="/admin/article?isp=draft" class="btn btn-link">草稿箱(<%= rows.draft %>)</a>
+    <% } else { %>
+        <a class="btn btn-link">全部(0)</a>
+        <a class="btn btn-link">已发布(0)</a>
+        <a class="btn btn-link">草稿箱(0)</a>
+    <% } %>
+    <div class="manbtn">
+        <form class="form-search" method="get" action="/admin/article">
+            <input type="text" name="queryContent" value="<%= queryConent %>" class="input-medium">
+            <button type="submit" class="btn">查询</button>
+        </form>
     </div>
 </div>
+<table class="table table-bordered table-striped table-hover">
+    <colgroup>
+        <col class="span1">
+        <col class="span6">
+        <col class="span1">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>编 号</th>
+        <th>标 题</th>
+        <th>作 者</th>
+        <th>分 类</th>
+        <th>标 签</th>
+        <th>评语数</th>
+        <th>日 期</th>
+        <th>操 作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if( articles && articles.length ) { %>
+        <% for(var i = 0; i < articles.length; i++) { %>
+            <tr>
+                <td>
+                    <%= articles[i].id %>
+                </td>
+                <td>
+                    <%= articles[i].title %>
+                </td>
+                <td>
+                    <%= articles[i].userId %>
+                </td>
+                <td>
+                    <%= articles[i].classifyId %>
+                </td>
+                <td>
+                    <%= articles[i].labelId %>
+                </td>
+                <td>
+                    <%= articles[i].remarkcount %>
+                </td>
+                <td>
+                    <%= articles[i].createDate %>
+                </td>
+                <td>
+                    <a class="btn btn-link" href="/admin/warticle?id=<%= articles[i]._id %>" style="padding: 0;">修改</a>
+                    &nbsp;
+                    <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delarticle?id=<%= articles[i]._id %>')" style="padding: 0;">删除</a>
+                </td>
+            </tr>
+        <% } %>
+        <% } else { %>
+            <tr>
+                <td colspan="8" style="text-align: center;">
+                    还没有分类数据！
+                </td>
+            </tr>
+    <% } %>
+    </tbody>
+</table>
+<% if (pageInfo){ %>
+    <div class='pagination pagination-right' current_page='<%= pageInfo.currentPage %>'>
+        <ul>
+            <%
+                var base_url = baseurl + (baseurl.lastIndexOf('?') < 0 ? '?' : '&') + 'cp=';
+            %>
+            <% if (pageInfo.currentPage == 1) { %>
+                <li class='disabled'><a>«</a></li>
+            <% } else { %>
+                <li><a href="<%= base_url %>1">«</a></li>
+            <% } %>
+
+            <%
+                var page_start = pageInfo.currentPage - 2 > 0 ? pageInfo.currentPage - 2 : 1;
+                var page_end = page_start + 4 >= pageInfo.totalPages ? pageInfo.totalPages : page_start + 4;
+            %>
+
+            <% if (page_start > 1) { %>
+                <li><a>...</a></li>
+            <% } %>
+
+            <% for(var i = page_start; i <= page_end; i++) { %>
+                <% if (i === pageInfo.currentPage) { %>
+                    <li class='disabled'><a><%= i %></a></li>
+                <% } else { %>
+                    <li><a href='<%= base_url + i %>'><%= i %></a></li>
+                <% } %>
+            <% } %>
+
+            <% if (page_end < pageInfo.totalPages ) { %>
+                <li><a>...</a></li>
+            <% } %>
+
+            <% if (pageInfo.currentPage == pageInfo.totalPages) { %>
+                <li class='disabled'><a>»</a></li>
+            <% } else { %>
+                <li><a href='<%= base_url + pageInfo.totalPages %>'>»</a></li>
+            <% } %>
+        </ul>
+    </div>
+    <script>
+        $(document).ready(function () {
+            var $nav = $('.pagination');
+            var current_page = $nav.attr('current_page');
+            if (current_page) {
+                $nav.find('li').each(function(){
+                    var $li = $(this);
+                    var $a = $li.find('a');
+                    if($a.html() == current_page){
+                        $li.addClass('active');
+                        $a.removeAttr('href');
+                    }
+                });
+            }
+        });
+    </script>
+<% } %>
 
 <% include includes/footer %>

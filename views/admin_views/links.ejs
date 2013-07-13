@@ -1,81 +1,72 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
-        </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="topmenu">
-                <div class="manbtn">
-                    <a id="addlink" href="/admin/addlinkpage" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</a>
-                </div>
-                连接管理
-            </div>
-            <table class="table table-bordered table-striped table-hover">
-                <colgroup>
-                    <col class="span1">
-                    <col class="span6">
-                    <col class="span1">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>序 号</th>
-                    <th>编 号</th>
-                    <th>连接名称</th>
-                    <th>连接地址</th>
-                    <th>打开方式</th>
-                    <th>是否可见</th>
-                    <th>描 述</th>
-                    <th>操 作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if( links.length ) { %>
-                <% for(var i = 0; i < links.length; i++) { %>
-                <tr>
-                    <td>
-                        <%= links[i].number %>
-                    </td>
-                    <td>
-                        <%= links[i].id %>
-                    </td>
-                    <td>
-                        <%= links[i].linkname %>
-                    </td>
-                    <td>
-                        <%= links[i].linkaddress %>
-                    </td>
-                    <td>
-                        <%= links[i].opentype %>
-                    </td>
-                    <td>
-                        <%= links[i].isvisible == 1 ? '是' : '否' %>
-                    </td>
-                    <td>
-                        <%= links[i].describe %>
-                    </td>
-                    <td>
-                        <a class="btn btn-link" href="/admin/addlinkpage?id=<%= links[i]._id %>" style="padding: 0;">修改</a>
-                        &nbsp;
-                        <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellink?id=<%= links[i]._id %>')" style="padding: 0;">删除</a>
-                    </td>
-                </tr>
-                <% } %>
-                <% } else { %>
-                <tr>
-                    <td colspan="8" style="text-align: center;">
-                        还没有分类数据！
-                    </td>
-                </tr>
-                <% } %>
-                </tbody>
-            </table>
-        </div>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="topmenu">
+    <div class="manbtn">
+        <a id="addlink" href="/admin/addlinkpage" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</a>
     </div>
+    连接管理
 </div>
+<table class="table table-bordered table-striped table-hover">
+    <colgroup>
+        <col class="span1">
+        <col class="span6">
+        <col class="span1">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>序 号</th>
+        <th>编 号</th>
+        <th>连接名称</th>
+        <th>连接地址</th>
+        <th>打开方式</th>
+        <th>是否可见</th>
+        <th>描 述</th>
+        <th>操 作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if( links.length ) { %>
+    <% for(var i = 0; i < links.length; i++) { %>
+    <tr>
+        <td>
+            <%= links[i].number %>
+        </td>
+        <td>
+            <%= links[i].id %>
+        </td>
+        <td>
+            <%= links[i].linkname %>
+        </td>
+        <td>
+            <%= links[i].linkaddress %>
+        </td>
+        <td>
+            <%= links[i].opentype %>
+        </td>
+        <td>
+            <%= links[i].isvisible == 1 ? '是' : '否' %>
+        </td>
+        <td>
+            <%= links[i].describe %>
+        </td>
+        <td>
+            <a class="btn btn-link" href="/admin/addlinkpage?id=<%= links[i]._id %>" style="padding: 0;">修改</a>
+            &nbsp;
+            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/dellink?id=<%= links[i]._id %>')" style="padding: 0;">删除</a>
+        </td>
+    </tr>
+    <% } %>
+    <% } else { %>
+    <tr>
+        <td colspan="8" style="text-align: center;">
+            还没有分类数据！
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
+</table>
 <script type="text/javascript">
 
     //$("#addlink").on('click',addUpdateLink);

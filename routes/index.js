@@ -13,10 +13,11 @@ exports.index = function(req, res){
     //获得当前页
     var currentPage = req.query.cp || 1;
     var ispQuery = req.query.isp ? {articlestatus:req.query.isp} : {};
-    var queryConent = req.query.queryContent;
+    var queryConent = req.query.queryContent || {};
     if(queryConent){
         ispQuery['$or'] = [{ "title" : new RegExp("^.*"+queryConent+".*$")}, { "content" : new RegExp("^.*"+queryConent+".*$")}];
     }
+    queryConent.articlestatus = 'publish';
     var proxy = new EventProxy();
     proxy.assign('rows','articles',function(rows,articles){
         if(articles){

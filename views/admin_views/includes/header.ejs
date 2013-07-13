@@ -11,7 +11,7 @@
     <script src="/after/js/myblog.js"></script>
 </head>
 <body>
-<div class="navbar">
+<div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <a class="brand" href="/admin/index">MyBlog</a>
         <ul class="nav">
@@ -35,3 +35,9 @@
         </ul>
     </div>
 </div>
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span2">
+            <% include lefter %>
+        </div>
+        <div class="span10" id="content">

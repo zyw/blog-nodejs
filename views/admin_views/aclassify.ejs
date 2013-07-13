@@ -1,66 +1,57 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
-        </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="topmenu">
-                <form method="post" action="/admin/addclassify" style="margin: 0 0;">
-                <div class="manbtn">
-                    <button id="addacname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
-                </div>
-                <div class="manbtn">
-                    <input id="acname" class="span2" type="text" name="acname" placeholder="分类名">
-                </div>
-                </form>
-                文章分类
-            </div>
-            <table class="table table-bordered table-striped table-hover">
-                <colgroup>
-                    <col class="span1">
-                    <col class="span6">
-                    <col class="span1">
-                </colgroup>
-                <thead>
-                <tr>
-                    <th>编 号</th>
-                    <th>分类名称</th>
-                    <th>操 作</th>
-                </tr>
-                </thead>
-                <tbody>
-                <% if( acs.length ) { %>
-                    <% for(var i = 0; i < acs.length; i++) { %>
-                    <tr>
-                        <td>
-                            <%= acs[i].id %>
-                        </td>
-                        <td>
-                            <%= acs[i].acname %>
-                        </td>
-                        <td>
-                            <a class="btn btn-link" style="padding: 0;" onclick="updateAclassify('<%= acs[i]._id %>','<%= acs[i].acname %>')">修改</a>
-                            &nbsp;
-                            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delclassify?id=<%= acs[i]._id %>')" style="padding: 0;">删除</a>
-                        </td>
-                    </tr>
-                    <% } %>
-                <% } else { %>
-                    <tr>
-                        <td colspan="3" style="text-align: center;">
-                            还没有分类数据！
-                        </td>
-                    </tr>
-                <% } %>
-                </tbody>
-            </table>
-        </div>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="topmenu">
+    <form method="post" action="/admin/addclassify" style="margin: 0 0;">
+    <div class="manbtn">
+        <button id="addacname" type="submit" class="btn btn-success"><i class="icon-plus icon-white"></i> 添 加</button>
     </div>
+    <div class="manbtn">
+        <input id="acname" class="span2" type="text" name="acname" placeholder="分类名">
+    </div>
+    </form>
+    文章分类
 </div>
+<table class="table table-bordered table-striped table-hover">
+    <colgroup>
+        <col class="span1">
+        <col class="span6">
+        <col class="span1">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>编 号</th>
+        <th>分类名称</th>
+        <th>操 作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if( acs.length ) { %>
+        <% for(var i = 0; i < acs.length; i++) { %>
+        <tr>
+            <td>
+                <%= acs[i].id %>
+            </td>
+            <td>
+                <%= acs[i].acname %>
+            </td>
+            <td>
+                <a class="btn btn-link" style="padding: 0;" onclick="updateAclassify('<%= acs[i]._id %>','<%= acs[i].acname %>')">修改</a>
+                &nbsp;
+                <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delclassify?id=<%= acs[i]._id %>')" style="padding: 0;">删除</a>
+            </td>
+        </tr>
+        <% } %>
+    <% } else { %>
+        <tr>
+            <td colspan="3" style="text-align: center;">
+                还没有分类数据！
+            </td>
+        </tr>
+    <% } %>
+    </tbody>
+</table>
 <script type="text/javascript">
     function updateAclassify(_id,acname){
         $.myblog.updateInfo({id:_id,updateName:acname,action:'/admin/updateclassify',label:'分类名称'});

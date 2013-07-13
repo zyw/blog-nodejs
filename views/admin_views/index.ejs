@@ -1,65 +1,58 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="hero-unit">
+    <h1>欢迎来到由Node.js开发的blog系统</h1>
+    <p>
+        您好！您现在访问的blog系统是由Node.js+MongoDB开发的，欢迎提出宝贵意见！
+    </p>
+    <% if(!locals.user){ %>
+    <p>
+        <a href="/login" class="btn btn-primary btn-large">登 录</a>
+        <a href="/reg" class="btn btn-large">注 册</a>
+    </p>
+    <% } else{ %>
+    <a class="btn btn-primary btn-large" href="/admin/warticle">发表博文</a>
+    <% } %>
+</div>
+<div class="row-fluid">
+    <div class="panel span6">
+        <div class="header">
+            <span class="col_fade">文章概括</span>
         </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="hero-unit">
-                <h1>欢迎来到由Node.js开发的blog系统</h1>
-                <p>
-                    您好！您现在访问的blog系统是由Node.js+MongoDB开发的，欢迎提出宝贵意见！
-                </p>
-                <% if(!locals.user){ %>
-                <p>
-                    <a href="/login" class="btn btn-primary btn-large">登 录</a>
-                    <a href="/reg" class="btn btn-large">注 册</a>
-                </p>
-                <% } else{ %>
-                <a class="btn btn-primary btn-large" href="/admin/warticle">发表博文</a>
-                <% } %>
-            </div>
-                <div class="panel pull-left" style="width: 475px">
-                    <div class="header">
-                        <span class="col_fade">文章概括</span>
-                    </div>
-                    <div class="inner">
-                        <ul>
-                            <li>文 数：500篇</li>
-                            <li>草 稿：20篇</li>
-                            <li>分 类：50个</li>
-                            <li>标 签：200个</li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="panel pull-right" style="width: 475px">
-                    <div class="header">
-                        <span class="col_fade">评语概括</span>
-                    </div>
-                    <div class="inner">
-                        <ul>
-                            <li>评语数：100条</li>
-                            <li>待审核：10条</li>
-                            <li>最多评语文章：Node.js入门</li>
-                            <li>最近评语：如何搭建Node.js开发环境</li>
-                        </ul>
-                    </div>
-                </div>
-            <div class="span9" style="margin-left:0;width:970px">
-                <div class="panel">
-                    <div class="header">
-                        <span class="col_fade">最近评语</span>
-                    </div>
-                    <div class="inner">
-                        <ul>
-                            <li>Node.js入门及晋级</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
+        <div class="inner">
+            <ul>
+                <li>文 数：500篇</li>
+                <li>草 稿：20篇</li>
+                <li>分 类：50个</li>
+                <li>标 签：200个</li>
+            </ul>
+        </div>
+    </div>
+    <div class="panel span6">
+        <div class="header">
+            <span class="col_fade">评语概括</span>
+        </div>
+        <div class="inner">
+            <ul>
+                <li>评语数：100条</li>
+                <li>待审核：10条</li>
+                <li>最多评语文章：Node.js入门</li>
+                <li>最近评语：如何搭建Node.js开发环境</li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="panel">
+        <div class="header">
+            <span class="col_fade">最近评语</span>
+        </div>
+        <div class="inner">
+            <ul>
+                <li>Node.js入门及晋级</li>
+            </ul>
         </div>
     </div>
 </div>

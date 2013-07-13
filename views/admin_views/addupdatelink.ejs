@@ -1,67 +1,58 @@
 <% include includes/header %>
 
-<div class="container">
-    <div class="row">
-        <div class="span2">
-            <% include includes/lefter %>
-        </div>
-        <div class="span10" id="content">
-            <% include includes/error_alert %>
-            <% include includes/success_alert %>
-            <div class="topmenu">
-                <div class="manbtn">
-                    <button id="addlink" onclick="$('#linkForm').submit()"  type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</button>
-                </div>
-                <%= common.label %>
-            </div>
-            <form class='form-horizontal' id='linkForm' action='<%= common.action %>' method='post'>
-                <input type='hidden' name='_id' id='_id'>
-                <div class='control-group'>
-                    <label class='control-label' for='number'>序 号：</label>
-                    <div class='controls'>
-                        <input type='text' class="span4" name='number' id='number' placeholder='序 号'>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='linkname'>连接名称：</label>
-                    <div class='controls'>
-                        <input type='text' class="span4" name='linkname' id='linkname' placeholder='连接名称'>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='linkaddress'>连接地址：</label>
-                    <div class='controls'>
-                        <input type='text' class="span4" name='linkaddress' id='linkaddress' placeholder='连接地址'>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='opentype'>打开方式：</label>
-                    <div class='controls'>
-                        <select id='opentype' class="span4" name='opentype'>
-                            <option value='__blank'>新窗口打开</option>
-                            <option value='_self'>当前窗口打开</option>
-                        </select>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='isvisible'>是否可见：</label>
-                    <div class='controls'>
-                        <select id='isvisible' class="span4" name='isvisible'>
-                            <option value='1'>是</option>
-                            <option value='0'>否</option>
-                        </select>
-                    </div>
-                </div>
-                <div class='control-group'>
-                    <label class='control-label' for='describe'>描 述：</label>
-                    <div class='controls'>
-                        <textarea id='describe' class="span4" name='describe'></textarea>
-                    </div>
-                </div>
-            </form>
+<% include includes/error_alert %>
+<% include includes/success_alert %>
+<div class="topmenu">
+    <div class="manbtn">
+        <button id="addlink" onclick="$('#linkForm').submit()"  type="button" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</button>
+    </div>
+    <%= common.label %>
+</div>
+<form class='form-horizontal' id='linkForm' action='<%= common.action %>' method='post'>
+    <input type='hidden' name='_id' id='_id'>
+    <div class='control-group'>
+        <label class='control-label' for='number'>序 号：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='number' id='number' placeholder='序 号'>
         </div>
     </div>
-</div>
+    <div class='control-group'>
+        <label class='control-label' for='linkname'>连接名称：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='linkname' id='linkname' placeholder='连接名称'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='linkaddress'>连接地址：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='linkaddress' id='linkaddress' placeholder='连接地址'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='opentype'>打开方式：</label>
+        <div class='controls'>
+            <select id='opentype' class="span4" name='opentype'>
+                <option value='__blank'>新窗口打开</option>
+                <option value='_self'>当前窗口打开</option>
+            </select>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='isvisible'>是否可见：</label>
+        <div class='controls'>
+            <select id='isvisible' class="span4" name='isvisible'>
+                <option value='1'>是</option>
+                <option value='0'>否</option>
+            </select>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='describe'>描 述：</label>
+        <div class='controls'>
+            <textarea id='describe' class="span4" name='describe'></textarea>
+        </div>
+    </div>
+</form>
 <script type="text/javascript">
     $(function(){
         <% if (link) { %>
