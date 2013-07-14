@@ -19,7 +19,7 @@ var app = express();
 app.set('port', process.env.PORT || 3000);
 app.set('views', __dirname + '/views');
 app.set('view engine', 'ejs');
-app.use(flash());
+
 app.use(express.favicon());
 app.use(express.logger('dev'));
 //创建上传的临时文件夹
@@ -36,6 +36,7 @@ app.use(express.session({
         db:settings.db
     })
 }));
+app.use(flash());
 //利用中间件代替app.dynamicHelpers
 app.use(middle.middleFun());
 

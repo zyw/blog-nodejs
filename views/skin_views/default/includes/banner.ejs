@@ -1,0 +1,14 @@
+<div class="hero-unit">
+    <h1>欢迎来到由Node.js开发的blog系统</h1>
+    <p>
+        您好！您现在访问的blog系统是由Node.js+MongoDB开发的，欢迎提出宝贵意见！
+    </p>
+    <% if(!locals.user){ %>
+    <p>
+        <a href="/login" class="btn btn-primary btn-large">登 录</a>
+        <a href="/reg" class="btn btn-large">注 册</a>
+    </p>
+    <% } else{ %>
+    <a class="btn btn-primary btn-large" href="/admin/warticle">发表博文</a>
+    <% } %>
+</div>

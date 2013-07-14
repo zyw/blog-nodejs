@@ -6,16 +6,16 @@
  * To change this template use File | Settings | File Templates.
  */
 
-var Aclassify = require('../module/aclassify')
-    , Alabel = require('../module/alabel')
-    , Link = require('../module/link')
-    , Article = require('../module/article')
-    , User = require('../module/user')
-    , Toolkit = require('../module/util')
-    , fs = require('fs')
-    , Eventproxy = require('eventproxy')
-    , util = require('util')
-    , settings = require('../settings');
+var Aclassify = require('../module/aclassify');
+var Alabel = require('../module/alabel');
+var Link = require('../module/link');
+var Article = require('../module/article');
+var User = require('../module/user');
+var Toolkit = require('../module/util');
+var fs = require('fs');
+var Eventproxy = require('eventproxy');
+var util = require('util');
+var settings = require('../settings');
 
 exports.index = function(req,res){
     res.render('admin_views/index');
@@ -386,7 +386,7 @@ exports.warticle = function(req,res){
     var eventProxy = new Eventproxy();
     if(id){
         eventProxy.assign('article','acs','als',function(article,acs,als){
-            console.log(article.content);
+            //console.log(article.content);
             res.render('admin_views/warticle',{
                 common:{label:'修改文章',action:'/admin/updatearticle'}
                 ,article:article

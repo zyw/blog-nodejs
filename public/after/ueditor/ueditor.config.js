@@ -145,5 +145,12 @@
                 'mergedown', 'splittocells', 'splittorows', 'splittocols', '|',
                 'preview', 'searchreplace']
         ]
+        ,initialFrameWidth:'82.90598290598291%'     //初始化编辑器宽度,默认1000
+        ,initialFrameHeight:350  //初始化编辑器高度,默认320
+        //autoHeightEnabled
+        // 是否自动长高,默认true
+        ,autoHeightEnabled:true
+        //浮动时工具栏距离浏览器顶部的高度，用于某些具有固定头部的页面
+        ,topOffset:40
     };
 })();

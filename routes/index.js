@@ -3,10 +3,10 @@
  * GET home page.
  */
 
-var EventProxy = require('eventproxy')
-    , settings = require('../settings')
-    , Article = require('../module/article')
-    , Toolkit = require('../module/util');
+var EventProxy = require('eventproxy');
+var settings = require('../settings');
+var Article = require('../module/article');
+var Toolkit = require('../module/util');
 
 /*首页获得文章*/
 exports.index = function(req, res){
@@ -46,4 +46,20 @@ exports.index = function(req, res){
         proxy.emit('rows',pageInfo);
         Article.optsSearch(queryConent,pageInfo,proxy.done('articles'));
     }));
+};
+exports.showart = function(req,res){
+    var artid = req.params.artid;
+    var messages = {messages:{alert:'查看的文章不存在或者已被删除！'}};
+    if(artid.length != 24){
+       return res.render('skin_views/' +settings.template + '/caution',messages);
+    }
+    Article.findById(artid,function(err,article){
+        if(err){
+            return res.render('skin_views/' +settings.template + '/caution',
+                {messages:{error:'查询文章异常，请稍后再试！'}});
+        }
+        if(article)
+            return res.render('skin_views/' +settings.template + '/showarticle',{article:article})
+        return res.render('skin_views/' +settings.template + '/caution',messages);
+    });
 };

@@ -1,0 +1,24 @@
+<% include includes/header %>
+<link href="/skins/default/stylesheets/shCoreDefault.css" rel="stylesheet">
+<script type="text/javascript" src="/skins/default/javascripts/shCore.js"></script>
+<script>
+    SyntaxHighlighter.all();
+</script>
+<div class="container">
+    <!-- Main hero unit for a primary marketing message or call to action -->
+    <% include includes/banner %>
+    <div class="row-fluid">
+        <div class="span10" style="word-break:break-all">
+            <% if (article) { %>
+                <h2><%= article.title %></h2>
+                <hr>
+                <%- article.content -%>
+            <% } %>
+        </div>
+        <div class="span2">
+
+        </div>
+
+    </div>
+</div>
+<% include includes/footer %>

@@ -1,10 +1,7 @@
 body{
     padding-top: 60px;
 }
-.nava li a {
-    padding-left: 25px;
-}
-
+/*顶部工具条*/
 .topmenu {
     padding: 8px 15px;
     margin: 0 0 20px;
@@ -19,6 +16,7 @@ body{
     margin-right: 5px;
     float: right;
 }
+/*登录页面*/
 .login{
     padding: 10px 0 0 0;
 }
@@ -33,6 +31,16 @@ body{
 }
 .panel .inner {
     padding: 10px;
+}
+/*固定左边导航*/
+.nava li a {
+    padding-left: 25px;
+}
+.left-nav{
+    width: 14.5299%;
+}
+.left-nav .affix{
+    position: fixed;
 }
 
 /**********************************************************

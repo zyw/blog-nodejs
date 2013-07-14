@@ -1,0 +1,27 @@
+<% include includes/header %>
+<div class="container">
+    <% include includes/banner %>
+    <div class="row-fluid">
+        <div class="span10">
+            <h3>警告</h3>
+            <hr>
+            <% if(messages && messages.alert != '') { %>
+                <div class="alert alert-error">
+                    <strong><%= messages.alert %></strong>
+                </div>
+            <% } else if(messages && messages.error) { %>
+                <div class="alert alert-error">
+                    <strong><%= messages.error %></strong>
+                </div>
+            <% } else{ %>
+                <div class="alert alert-success">
+                    <strong>没有警告信息。</strong>
+                </div>
+            <% } %>
+        </div>
+        <div class="span2">
+
+        </div>
+    </div>
+</div>
+<% include includes/footer %>

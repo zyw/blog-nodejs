@@ -20,6 +20,10 @@ module.exports =function(app){
     app.post('/postreg',user.postreg);
     app.post('/postlogin',user.postlogin);
 
+    app.get('/showart/:artid',routes.showart);
+
+
+
 
     //包含admin的访问目录
     app.all('/admin/*',afterManager.checking);
