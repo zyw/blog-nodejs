@@ -11,7 +11,7 @@
                     articles.forEach(function(article){
             %>
                             <h2><%= article.title %></h2>
-                            <p style="word-break:break-all">
+                            <p class="text-format">
                                 <%- article.content -%>
                             </p>
                             <p class="pull-right"><a href="/showart/<%= article._id %>">&lt;&lt;阅读全文</a></p>
@@ -23,57 +23,7 @@
             <% include includes/pagination %>
         </div>
         <div class="span2" style="padding-top: 10px;">
-            <div class="right-nav">
-                <div class="input-append">
-                    <input class="span8" id="appendedInputButton" type="text">
-                    <button class="btn" type="button">搜</button>
-                </div>
-            </div>
-            <div class="right-nav">
-                <h5>近期文章</h5>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>
-            <div class="right-nav">
-                <h5>近期评论</h5>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>
-            <div class="right-nav">
-                <h5>文章分类</h5>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>
-            <div class="right-nav">
-                <h5>推荐文章</h5>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>
-            <div class="right-nav">
-                <h5>阅读排行</h5>
-                <ul>
-                    <li><a href="#">Action</a></li>
-                    <li><a href="#">Another action</a></li>
-                    <li><a href="#">Something else here</a></li>
-                    <li><a href="#">Separated link</a></li>
-                </ul>
-            </div>
+            <% include includes/right %>
         </div>
     </div>
 </div>

@@ -37,3 +37,9 @@ body {
     height: 50px;
     background: url(../images/top_button.png) no-repeat 0px 0px;
 }
+
+/*强制文本换行，缩进*/
+.text-format{
+    word-break:break-all;
+    text-indent:20px;
+}

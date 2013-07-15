@@ -1,0 +1,51 @@
+<% include includes/header %>
+
+<div class="topmenu">
+    <div class="manbtn">
+        <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</a>
+    </div>
+    添加导航
+</div>
+<form class='form-horizontal' id='linkForm' action='#' method='post'>
+    <input type='hidden' name='_id' id='_id'>
+    <div class='control-group'>
+        <label class='control-label' for='number'>序 号：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='number' id='number' placeholder='序 号'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='title'>标 题：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='title' id='title' placeholder='标 题'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='linkaddress'>连 接：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='linkaddress' id='linkaddress' placeholder='连 接'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='opentype'>打开方式：</label>
+        <div class='controls'>
+            <select id='opentype' class="span4" name='opentype'>
+                <option value='__blank'>新窗口打开</option>
+                <option value='_self'>当前窗口打开</option>
+            </select>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='icon'>图 标：</label>
+        <div class='controls'>
+            <input type='file' class="span4" name='icon' id='icon' placeholder='图 标'>
+        </div>
+    </div>
+    <div class='control-group'>
+        <label class='control-label' for='describe'>描 述：</label>
+        <div class='controls'>
+            <textarea id='describe' class="span4" name='describe'></textarea>
+        </div>
+    </div>
+</form>
+<% include includes/footer %>

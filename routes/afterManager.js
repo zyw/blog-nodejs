@@ -24,9 +24,13 @@ exports.index = function(req,res){
 exports.remark = function(req,res){
     res.render('admin_views/remark')
 };
-
+/*导航操作*/
 exports.nav = function(req,res){
-    res.render('admin_views/nav')
+    res.render('admin_views/nav');
+};
+//添加修改导航
+exports.addupdatenav = function(req,res){
+   res.render('admin_views/addupdatenav');
 };
 
 exports.moldboard = function(req,res){
@@ -42,6 +46,11 @@ exports.umanager = function(req,res){
 exports.login = function(req,res){
     res.render('admin_views/login');
 };
+//退出
+exports.logout = function(req,res){
+    req.session.user = null;
+    res.redirect('/admin/login');
+}
 //完成用户登录操作
 exports.postlogin = function(req,res){
     Toolkit.login(req,res,{failPage:'/admin/login',successPage:'/admin/index'});

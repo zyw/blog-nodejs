@@ -43,6 +43,13 @@ body{
     position: fixed;
 }
 
+.border-style{
+    border: 1px solid #DDDDDD;
+    -webkit-border-radius: 4px 4px 4px 4px;
+        -moz-border-radius: 4px 4px 4px 4px;
+            border-radius: 4px 4px 4px 4px;
+}
+
 /**********************************************************
  * THEME: "default"                                       *
  **********************************************************/

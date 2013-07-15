@@ -33,6 +33,7 @@ module.exports =function(app){
     });
 
     app.get('/admin/login',afterManager.login);
+    app.get('/admin/logout',afterManager.logout);
     app.post('/admin/postlogin',afterManager.postlogin);
 
     app.get('/admin/index',afterManager.index);
@@ -58,7 +59,10 @@ module.exports =function(app){
     app.post('/admin/updatelabel',afterManager.updatelabel);
 
     app.get('/admin/remark',afterManager.remark);
+    /*导航*/
     app.get('/admin/nav',afterManager.nav);
+    app.get('/admin/addupdatenav',afterManager.addupdatenav);
+
     app.get('/admin/moldboard',afterManager.moldboard);
 
     app.get('/admin/links',afterManager.links);

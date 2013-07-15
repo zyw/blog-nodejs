@@ -8,17 +8,18 @@
     <!-- Main hero unit for a primary marketing message or call to action -->
     <% include includes/banner %>
     <div class="row-fluid">
-        <div class="span10" style="word-break:break-all">
+        <div class="span10">
             <% if (article) { %>
                 <h2><%= article.title %></h2>
                 <hr>
-                <%- article.content -%>
+                <div class="text-format">
+                    <%- article.content -%>
+                </div>
             <% } %>
         </div>
         <div class="span2">
-
+            <% include includes/right %>
         </div>
-
     </div>
 </div>
 <% include includes/footer %>
