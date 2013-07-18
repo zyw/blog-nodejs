@@ -2,11 +2,11 @@
 
 <div class="topmenu">
     <div class="manbtn">
-        <a id="addarticle" href="/admin/warticle" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</a>
+        <button id="addUpdateNav" class="btn btn-success"><i class="icon-plus icon-white"></i> 保 存</button>
     </div>
     添加导航
 </div>
-<form class='form-horizontal' id='linkForm' action='#' method='post'>
+<form class='form-horizontal' id='navForm' action='/admin/addnav' enctype="multipart/form-data" method='post'>
     <input type='hidden' name='_id' id='_id'>
     <input type='hidden' name="parentId" id="parentId">
     <div class='control-group'>
@@ -32,9 +32,9 @@
         </div>
     </div>
     <div class='control-group'>
-        <label class='control-label' for='linkaddress'>连 接：</label>
+        <label class='control-label' for='url'>连 接：</label>
         <div class='controls'>
-            <input type='text' class="span4" name='linkaddress' id='linkaddress' placeholder='连 接'>
+            <input type='text' class="span4" name='url' id='url' placeholder='连 接'>
             <span class="help-inline">只要导航是外部导航时才需要填写连接地址。</span>
         </div>
     </div>
@@ -42,8 +42,8 @@
         <label class='control-label' for='opentype'>打开方式：</label>
         <div class='controls'>
             <select id='opentype' class="span4" name='opentype'>
-                <option value='__blank'>新窗口打开</option>
                 <option value='_self'>当前窗口打开</option>
+                <option value='_blank'>新窗口打开</option>
             </select>
             <span class="help-inline">导航的打开方式。</span>
         </div>
@@ -56,22 +56,25 @@
         </div>
     </div>
     <div class='control-group'>
-        <label class='control-label' for='describe'>描 述：</label>
+        <label class='control-label' for='des'>描 述：</label>
         <div class='controls'>
-            <textarea id='describe' class="span4" name='describe'></textarea>
+            <textarea id='des' class="span4" name='des'></textarea>
         </div>
     </div>
 </form>
 <script type="text/javascript">
     $(function(){
+        $("#addUpdateNav").on('click',function(){
+            $("#navForm").submit();
+        });
         var $select = $('#clssify').selectize({
             plugins: ['remove_button'],
             delimiter: ',',
             persist: false,
             valueField:'_id',
-            labelField:'alname',
+            labelField:'acname',
             maxItems:5,
-            options:[{_id:1,alname:'Java'},{_id:2,alname:'Node.js'}],
+            options:<%= acls %>,
                 create: function(input) {
             return {
                 value: input,

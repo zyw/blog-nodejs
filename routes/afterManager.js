@@ -11,6 +11,7 @@ var Alabel = require('../module/alabel');
 var Link = require('../module/link');
 var Article = require('../module/article');
 var User = require('../module/user');
+var Nav = require('../module/nav');
 var Toolkit = require('../module/util');
 var fs = require('fs');
 var Eventproxy = require('eventproxy');
@@ -24,14 +25,68 @@ exports.index = function(req,res){
 exports.remark = function(req,res){
     res.render('admin_views/remark')
 };
-/*导航操作*/
+/*============================导航操作======================*/
 exports.nav = function(req,res){
     res.render('admin_views/nav');
 };
-//添加修改导航
+//添加修改导航页面
 exports.addupdatenav = function(req,res){
-   res.render('admin_views/addupdatenav');
+    Aclassify.aclasifyAll(function(err,acls){
+        res.render('admin_views/addupdatenav',{acls:Toolkit.inspect(acls,['_id','acname'])});
+    });
 };
+exports.addnav = function(req,res){
+    var iconPath = "";
+    if(req.files.icon.size){
+        // 获得文件的临时路径
+        var tmp_path = req.files.icon.path;
+        // 文件名
+        var fileName = req.files.icon.name;
+        // 扩展名
+        var extName = fileName.substring(fileName.lastIndexOf('.'));
+        // 获得日期并创建日期文件夹保存不同日期的文件
+        var date = new Date();
+        var basePath = settings.commonPath + settings.navimgs;
+        if(!fs.existsSync(basePath)){
+            fs.mkdirSync(basePath);
+        }
+        //新文件名
+        var newFileName = date.getTime() + extName;
+        //移动路径
+        var target_path = basePath + newFileName;
+        // 移动文件
+        fs.renameSync(tmp_path, target_path);
+        iconPath = settings.navimgs + newFileName;
+    }
+    var nav = {
+        number:req.body.number,
+        title:req.body.title,
+        icid:req.body.clssifyId,
+        url:req.body.url,
+        opentype:req.body.opentype,
+        parentId:req.body.parentId || 0,
+        icon:iconPath,
+        des:req.body.des
+    };
+
+    if(nav.number == null || nav.number.trim() == ""){
+        req.flash('error','请输入序号！');
+        return res.redirect('/admin/addupdatenav')
+    }
+    if(!nav.title || !nav.title.trim()){
+        req.flash('error','请输入导航标题！');
+        return res.redirect('/admin/addupdatenav');
+    }
+    var navvo = new Nav(nav);
+    navvo.save(function(err,inav){
+        if(err){
+            req.flash('error','插入导航异常！');
+            return res.redirect('/admin/addupdatenav');
+        }
+        return res.redirect('/admin/nav');
+    });
+}
+
 
 exports.moldboard = function(req,res){
     res.render('admin_views/moldboard')
