@@ -8,7 +8,14 @@
 </div>
 <form class='form-horizontal' id='navForm' action='/admin/addnav' enctype="multipart/form-data" method='post'>
     <input type='hidden' name='_id' id='_id'>
-    <input type='hidden' name="parentId" id="parentId">
+    <input type='hidden' name="parentId" id="parentId" value="<%= pid %>">
+    <div class='control-group'>
+        <label class='control-label' for='parentName'>父导航：</label>
+        <div class='controls'>
+            <input type='text' class="span4" name='parentName' id='parentName' value="<%= pname %>" disabled>
+            <span class="help-inline">控制导航显示的顺序。</span>
+        </div>
+    </div>
     <div class='control-group'>
         <label class='control-label' for='number'>序 号：</label>
         <div class='controls'>

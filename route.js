@@ -62,7 +62,10 @@ module.exports =function(app){
     /*导航*/
     app.get('/admin/nav',afterManager.nav);
     app.get('/admin/addupdatenav',afterManager.addupdatenav);   //跳转至添加修改导航的页面
+    app.get('/admin/navlist',afterManager.navlist);
+    app.get('/admin/delnav',afterManager.delnav);
     app.post('/admin/addnav',afterManager.addnav);
+    app.post('/admin/navtree',afterManager.navtree);
 
     app.get('/admin/moldboard',afterManager.moldboard);
 

@@ -29,11 +29,67 @@ exports.remark = function(req,res){
 exports.nav = function(req,res){
     res.render('admin_views/nav');
 };
+
+exports.navlist = function(req,res){
+    var pid = req.query.pid || '0';
+    Nav.findByParentId(pid,null,function(err,navs){
+        if(!navs || !navs.length){
+            return res.render('admin_views/nav_list',{navs:null});
+        }
+        var icids = [];
+        navs.forEach(function(nav){
+            var icid = nav.icid;
+            if(icid){
+                if(icid.indexOf(',') != -1){
+                    icid.split(',').forEach(function(id){
+                        icids.push(Toolkit.toId(id));
+                    });
+                }else{
+                    icids.push(Toolkit.toId(icid));
+                }
+            }
+        });
+
+        Aclassify.aclassifysByIds(icids,function(err,acls){
+            var aclMap = {};
+            acls.forEach(function(acl){
+                aclMap[acl._id] = acl.acname;
+            });
+            var result = [];
+            navs.forEach(function(nav){
+                var icid = nav.icid;
+                if(!icid){
+                    nav.icid = "无";
+                }else{
+                    if(icid.indexOf(',') != -1){
+                        var acnames = [];
+                        icid.split(',').forEach(function(id){
+                            acnames.push(aclMap[id]);
+                        });
+                        nav.icid = acnames.join(',');
+                    }else{
+                        nav.icid = aclMap[nav.icid];
+                    }
+                }
+                result.push(nav);
+            });
+            res.render('admin_views/nav_list',{navs:result});
+        });
+    });
+};
+
 //添加修改导航页面
 exports.addupdatenav = function(req,res){
-    Aclassify.aclasifyAll(function(err,acls){
-        res.render('admin_views/addupdatenav',{acls:Toolkit.inspect(acls,['_id','acname'])});
-    });
+    var id = req.query._id;
+    if(id){
+
+    }else{
+        var pid = req.query.pid || '0';
+        var pname = req.query.pname || '主导航';
+        Aclassify.aclasifyAll(function(err,acls){
+            res.render('admin_views/addupdatenav',{acls:Toolkit.inspect(acls,['_id','acname']),pid:pid,pname:pname});
+        });
+    }
 };
 exports.addnav = function(req,res){
     var iconPath = "";
@@ -64,7 +120,7 @@ exports.addnav = function(req,res){
         icid:req.body.clssifyId,
         url:req.body.url,
         opentype:req.body.opentype,
-        parentId:req.body.parentId || 0,
+        parentId:req.body.parentId || '0',
         icon:iconPath,
         des:req.body.des
     };
@@ -87,6 +143,50 @@ exports.addnav = function(req,res){
     });
 }
 
+exports.navtree = function(req,res){
+    var pid = req.body._id || '0';
+    Nav.findByParentId(pid,{_id:1,title:1,parentId:1},function(err,navs){
+        if(err){
+            return res.json(null);
+        }
+        var proxy = new Eventproxy();
+        proxy.after('count',navs.length,function(list){
+            for(var i = 0; i < navs.length; i++){
+                var isp = Boolean(list[i]);
+                if(isp){
+                    navs[i].isParent = isp;
+                    navs[i].click = '$.myblog.nav_list(\''+navs[i]._id+'\')';
+                }
+            }
+            if(pid == '0'){
+                var result = {};
+                //result._id = '0';
+                result.title = "主导航";
+                //result.parentId = '0';
+                result.children = navs;
+                result.click = '$.myblog.nav_list(\'0\')';
+                result.open = true;
+                return res.json(result);
+            }
+            return res.json(navs);
+        });
+        navs.forEach(function(nav){
+            Nav.countByParentId(nav._id + "",proxy.done('count'));
+        });
+    });
+};
+
+exports.delnav = function(req,res){
+    var id = req.query.id;
+    Nav.delById(id,function(err){
+        if(err){
+            req.flash('error','删除失败，请稍后再试！');
+            return res.redirect('/admin/nav');
+        }
+        req.flash('success','删除成功！');
+        return res.redirect('/admin/nav');
+    });
+};
 
 exports.moldboard = function(req,res){
     res.render('admin_views/moldboard')
@@ -278,7 +378,7 @@ exports.article = function(req,res){
             //更改显示标签
             var lids = article.labelId;
             if(lids){
-                if(lids.indexOf(',')){
+                if(lids.indexOf(',') != -1){
                     var labels = [];
                     var tempLabelIds = lids.split(',');
                     tempLabelIds.forEach(function(labelId){
@@ -342,7 +442,7 @@ exports.article = function(req,res){
                 }
                 var lid = article.labelId;
                 if(lid){
-                    if(lid.indexOf(',')){
+                    if(lid.indexOf(',') != -1){
                         lid.split(',').forEach(function(item){
                             labelIds.push(Toolkit.toId(item));
                         });
@@ -450,7 +550,6 @@ exports.warticle = function(req,res){
     var eventProxy = new Eventproxy();
     if(id){
         eventProxy.assign('article','acs','als',function(article,acs,als){
-            //console.log(article.content);
             res.render('admin_views/warticle',{
                 common:{label:'修改文章',action:'/admin/updatearticle'}
                 ,article:article

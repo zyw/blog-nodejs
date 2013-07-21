@@ -46,3 +46,31 @@ Nav.prototype.save = function(callback){
         });
     });
 };
+
+Nav.findByParentId = function(parentId,opts,callback){
+    var options = opts || {_id:1,number:1,title:1,icid:1,url:1,opentype:1,icon:1,parentId:1,des:1};
+    db.collection('nav').find({parentId:parentId},options).sort({number:1}).toArray(function(err,navs){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,navs);
+    });
+};
+
+Nav.countByParentId = function(parentId,callback){
+    db.collection('nav').count({parentId:parentId},function(err,count){
+        if(err){
+            return callback(err,0);
+        }
+        return callback(err,count);
+    });
+};
+
+Nav.delById = function(id,callback){
+    db.collection('nav').removeById(id,function(err){
+        if(err){
+            return callback(err);
+        }
+        return callback(null);
+    });
+};

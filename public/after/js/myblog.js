@@ -128,6 +128,12 @@ blogModule = {
             $("#_id").val(opts.id);
             $("#updateName").val(opts.updateName);
             $("#updateAlert").modal('show');
+        },
+        nav_list:function(pid){
+            $.get('/admin/navlist',{pid:pid},function(data){
+                $("#viewTable").empty();
+                $("#viewTable").append(data);
+            });
         }
     };
 })(jQuery);

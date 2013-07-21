@@ -1,0 +1,61 @@
+<table class="table table-bordered table-striped table-hover">
+    <colgroup>
+        <col class="span1">
+        <col class="span6">
+        <col class="span1">
+    </colgroup>
+    <thead>
+    <tr>
+        <th>序 号</th>
+        <th>标 题</th>
+        <th>添加的分类</th>
+        <th>连 接</th>
+        <th>打开方式</th>
+        <th>图 标</th>
+        <th>描 述</th>
+        <th>操 作</th>
+    </tr>
+    </thead>
+    <tbody>
+    <% if( navs != null && navs.length ) { %>
+    <% for(var i = 0; i < navs.length; i++) { %>
+    <tr>
+        <td>
+            <%= navs[i].number %>
+        </td>
+        <td>
+            <%= navs[i].title %>
+        </td>
+        <td>
+            <%= navs[i].icid %>
+        </td>
+        <td>
+            <%= navs[i].url %>
+        </td>
+        <td>
+            <%= navs[i].opentype %>
+        </td>
+        <td>
+            <%= navs[i].icon %>
+        </td>
+        <td>
+            <%= navs[i].des %>
+        </td>
+        <td>
+            <a class="btn btn-link" href="/admin/addupdatenav?pid=<%= navs[i]._id %>&pname=<%= navs[i].title%>" style="padding: 0;">添加子导航</a>
+            &nbsp;
+            <a class="btn btn-link" style="padding: 0;">修改</a>
+            &nbsp;
+            <a class="btn btn-link" onclick="$.myblog.confirmation('/admin/delnav?id=<%=navs[i]._id%>')" style="padding: 0;">删除</a>
+        </td>
+    </tr>
+    <% } %>
+    <% } else { %>
+    <tr>
+        <td colspan="8" style="text-align: center;">
+            还没有分类数据！
+        </td>
+    </tr>
+    <% } %>
+    </tbody>
+</table>
