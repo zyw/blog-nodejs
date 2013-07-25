@@ -42,7 +42,9 @@
             <%= navs[i].des %>
         </td>
         <td>
-            <a class="btn btn-link" href="/admin/addupdatenav?pid=<%= navs[i]._id %>&pname=<%= navs[i].title%>" style="padding: 0;">添加子导航</a>
+            <% if(navs[i].parentId == '0' ) { %>
+                <a class="btn btn-link" href="/admin/addupdatenav?pid=<%= navs[i]._id %>&pname=<%= navs[i].title%>" style="padding: 0;">添加子导航</a>
+            <% } %>
             &nbsp;
             <a class="btn btn-link" style="padding: 0;">修改</a>
             &nbsp;

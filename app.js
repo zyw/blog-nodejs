@@ -3,15 +3,15 @@
  * Module dependencies.
  */
 
-var express = require('express')
-  , http = require('http')
-  , path = require('path')
-  , fs = require('fs')
-  , MongoStore = require("connect-mongo")(express)
-  , settings = require('./settings')
-  , route = require('./route')
-  , middle = require('./module/custom_middle')
-  , flash = require('connect-flash');
+var express = require('express');
+var http = require('http');
+var path = require('path');
+var fs = require('fs');
+var MongoStore = require("connect-mongo")(express);
+var settings = require('./settings');
+var route = require('./route');
+var middle = require('./module/custom_middle');
+var flash = require('connect-flash');
 
 var app = express();
 
@@ -31,7 +31,7 @@ app.use(express.cookieParser());
 app.use(express.session({
     secret:settings.cookieSecret,
     key:settings.db,
-    cookie:{maxAge:1000 * 60 * 30},   //session 保存时间 单位是毫秒
+    cookie:{maxAge:1000 * 60 * 60 * 24 * 2},   //session 保存时间 单位是毫秒 现在是2天
     store:new MongoStore({
         db:settings.db
     })

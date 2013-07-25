@@ -7,29 +7,40 @@ var EventProxy = require('eventproxy');
 var settings = require('../settings');
 var Article = require('../module/article');
 var Toolkit = require('../module/util');
+var Nav = require('../module/nav');
 
 /*首页获得文章*/
 exports.index = function(req, res){
     //获得当前页
     var currentPage = req.query.cp || 1;
-    var ispQuery = req.query.isp ? {articlestatus:req.query.isp} : {};
+    var ispQuery = req.query.isp ? { articlestatus:req.query.isp } : {};
     var queryConent = req.query.queryContent || {};
     if(queryConent){
         ispQuery['$or'] = [{ "title" : new RegExp("^.*"+queryConent+".*$")}, { "content" : new RegExp("^.*"+queryConent+".*$")}];
     }
     queryConent.articlestatus = 'publish';
     var proxy = new EventProxy();
-    proxy.assign('rows','articles',function(rows,articles){
+    proxy.assign('rows','articles','navs',function(rows,articles,navs){
         if(articles){
             articles.forEach(function(article){
                 article.content = Toolkit.truncation(Toolkit.revmoeTag(article.content));
             });
         }
-        res.render('skin_views/' +settings.template + '/index',{
-            articles:articles,
-            baseurl:Toolkit.revmoecp(req.originalUrl),
-            pageInfo:rows,
-            queryConent:(queryConent ? queryConent : '')
+        proxy.after('navchildren',navs.length,function(navchildren){
+            for(var i = 0; i < navs.length; i++){
+                navs[i].children = navchildren[i];
+            }
+            req.session.navs = navs;
+            res.render('skin_views/' +settings.template + '/index',{
+                articles:articles,
+                baseurl:Toolkit.revmoecp(req.originalUrl),
+                pageInfo:rows,
+                queryConent:(queryConent ? queryConent : '')
+            });
+        });
+        navs.forEach(function(nav){
+            var id = nav._id;
+            Nav.findByParentId(id + '',null,proxy.done('navchildren'));
         });
     });
 
@@ -46,6 +57,7 @@ exports.index = function(req, res){
         proxy.emit('rows',pageInfo);
         Article.optsSearch(queryConent,pageInfo,proxy.done('articles'));
     }));
+    Nav.findByParentId('0',null,proxy.done('navs'));
 };
 exports.showart = function(req,res){
     var artid = req.params.artid;

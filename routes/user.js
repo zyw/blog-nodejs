@@ -3,9 +3,9 @@
  * GET users listing.
  */
 
-var User = require("../module/user")
-    , Toolkit = require('../module/util')
-    , settings = require('../settings');
+var User = require("../module/user");
+var Toolkit = require('../module/util');
+var settings = require('../settings');
 
 /*------------------页面渲染---------------------------*/
 //渲染注册页面
