@@ -19,49 +19,21 @@
             <div class="row-fluid">
                 <hr>
                 <h4>评 语：</h4>
-                <div class="media">
-                    <a class="pull-left" href="#">
-                        <img class="media-object" style="width: 64px; height: 64px;" src="/ulfs/avatars/default.png">
-                    </a>
-                    <div class="media-body">
-                        <h4 class="media-heading">Media heading</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        <div>
-                            <a class="btn btn-link">回复</a>
-                        </div>
-                        <div class="media">
-                            <a class="pull-left" href="#">
-                                <img class="media-object" style="width: 64px; height: 64px;" src="/ulfs/avatars/default.png">
-                            </a>
-                            <div class="media-body">
-                                <h4 class="media-heading">Media heading</h4>
-                                Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                                <div>
-                                    <a class="btn btn-link">回复</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="media">
-                    <a class="pull-left" href="#">
-                        <img class="media-object" style="width: 64px; height: 64px;" src="/ulfs/avatars/default.png">
-                    </a>
-                    <div class="media-body">
-                        <h4 class="media-heading">Media heading</h4>
-                        Cras sit amet nibh libero, in gravida nulla. Nulla vel metus scelerisque ante sollicitudin commodo. Cras purus odio, vestibulum in vulputate at, tempus viverra turpis. Fusce condimentum nunc ac nisi vulputate fringilla. Donec lacinia congue felis in faucibus.
-                        <div>
-                            <a class="btn btn-link">回复</a>
-                        </div>
-                    </div>
-                </div>
+                <div id="remarkdiv"></div>
             </div>
-            <div class="row-fluid">
+            <div class="row-fluid" id="fbpy">
                 <hr>
-                <h3>发表评语：</h3>
+                <div id="cancelhf" class="pull-right" style="display:none;">
+                    <button onclick="$.cancelReplyRemark();" class="btn btn-mini btn-primary" type="button">取消回复</button>
+                </div>
+                <div>
+                    <h3>发表评语：</h3>
+                </div>
                 <div>电子邮件地址不会被公开。 必填项已用 <span style="color: #ff0000;">*</span> 标注</div>
                 <div>&nbsp;</div>
-                <form>
+                <form id="remarkForm" method="post">
+                    <input name="articleId" id="articleId" type="hidden" value="<%=article._id%>">
+                    <input name="pid" type="hidden" id="pid">
                     <label>姓 名：<span style="color: #ff0000;">*</span></label>
                     <input type="text" id="rname" name="rname" class="span8" placeholder="姓 名" required>
                     <label>Email：<span style="color: #ff0000;">*</span></label>
@@ -79,6 +51,57 @@
         </div>
         <script type="text/javascript">
             var ue = UE.getEditor('remark');
+            $(function(){
+
+                $.replyRemark = function(rid){
+                    $("#cancelhf").css('display','block');
+                    $("#pid").val(rid);
+                };
+
+                $.cancelReplyRemark = function(){
+                    $("#cancelhf").css('display','none');
+                    $("#pid").val('0')
+                }
+
+                var tagLeft = "<div class='media'><a class='pull-left' href='#'><img class='media-object' style='width: 64px; height: 64px;' src='/ulfs/avatars/default.png'></a><div class='media-body'>";
+                var tagRight = "</div></div>";
+                var result = "";
+                function remarkHTML(data){
+                    data.forEach(function(obj){
+                        result += tagLeft;
+                        result += obj.rcontent;
+                        result += "<div><a href='#fbpy' onclick='$.replyRemark(\""+obj._id+"\");' class='btn btn-link'>回复</a></div>"
+                        if(obj.children && obj.children.length > 0){
+                            remarkHTML(obj.children);
+                        }
+                        result += tagRight;
+                    });
+                };
+                //异步加载回复
+                function loadRemark(){
+                    var artId = $("#articleId").val();
+                    $.post('/findRemark?temp='+new Date().getTime(),{artId:artId},function(data){
+                        remarkHTML(data);
+                        $("#remarkdiv").empty();
+                        $("#remarkdiv").append(result);
+                        result = '';
+                    },'json');
+                };
+                loadRemark();
+                //表单异步提交
+                var options = {
+                    dataType:'json',
+                    clearForm:true,
+                    type:'POST',
+                    url:'/addRemark',
+                    success:function(responseText,statusText){
+                        ZENG.msgbox.show(responseText.message, responseText.rstates, 2000);
+                        ue.execCommand( 'cleardoc' );
+                        loadRemark();
+                    }
+                };
+                $("#remarkForm").ajaxForm(options);
+            });
         </script>
         <div class="span2">
             <% include includes/right %>

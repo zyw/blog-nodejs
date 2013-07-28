@@ -22,6 +22,9 @@ module.exports =function(app){
 
     app.get('/showart/:artid',routes.showart);
 
+    app.post('/addRemark',routes.addRemark);
+    app.post('/findRemark',routes.findRemark);
+
 
 
 

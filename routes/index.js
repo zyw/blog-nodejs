@@ -8,6 +8,8 @@ var settings = require('../settings');
 var Article = require('../module/article');
 var Toolkit = require('../module/util');
 var Nav = require('../module/nav');
+var Remark = require('../module/remark');
+var util = require('util');
 
 /*首页获得文章*/
 exports.index = function(req, res){
@@ -30,7 +32,7 @@ exports.index = function(req, res){
             for(var i = 0; i < navs.length; i++){
                 navs[i].children = navchildren[i];
             }
-            req.session.navs = navs;
+            res.locals.navs = req.session.navs = navs;
             res.render('skin_views/' +settings.template + '/index',{
                 articles:articles,
                 baseurl:Toolkit.revmoecp(req.originalUrl),
@@ -71,7 +73,41 @@ exports.showart = function(req,res){
                 {messages:{error:'查询文章异常，请稍后再试！'}});
         }
         if(article)
-            return res.render('skin_views/' +settings.template + '/showarticle',{article:article})
+            return res.render('skin_views/' +settings.template + '/showarticle',{rstates:null,article:article})
         return res.render('skin_views/' +settings.template + '/caution',messages);
+    });
+};
+exports.addRemark = function(req,res){
+    var remark = {
+        articleId:req.body.articleId,
+        name:req.body.rname,
+        email:req.body.email,
+        site:req.body.site,
+        rcontent:req.body.remark,
+        rdt:new Date(),
+        pid:req.body.pid || '0'
+    };
+    var remark = new Remark(remark);
+    remark.save(function(err,remark){
+        if(err){
+            res.json({rstates:5,message:'发布评语失败！'});
+        }
+        res.json({rstates:4,message:'发布评语成功！'});
+    });
+};
+exports.findRemark = function(req,res){
+    var artId = req.body.artId;
+    var proxy = new EventProxy();
+    Remark.findByPid(artId,'0',function(err,remarks){
+        proxy.after('rlist',remarks.length,function(rlist){
+            console.log(util.inspect(rlist,true));
+            res.json(rlist);
+        });
+        remarks.forEach(function(remark){
+            Remark.findByPid(artId,remark._id + "",function(err,remarks){
+                remark.children = remarks;
+                proxy.emit('rlist',remark);
+            });
+        });
     });
 };

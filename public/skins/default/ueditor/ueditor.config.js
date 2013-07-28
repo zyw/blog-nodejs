@@ -113,22 +113,17 @@
         UEDITOR_HOME_URL : URL
 
         //图片上传配置区
-        ,imageUrl:"/admin/uploadImage"             //图片上传提交地址
+        ,imageUrl:""             //图片上传提交地址
         ,imagePath:""                     //图片修正地址，引用了fixedImagePath,如有特殊需求，可自行配置
 
         //附件上传配置区
-        ,fileUrl:"/admin/attachment"               //附件上传提交地址
+        ,fileUrl:""               //附件上传提交地址
         ,filePath:""                   //附件修正地址，同imagePath
         //,fileFieldName:"upfile"                    //附件提交的表单名，若此处修改，需要在后台对应文件修改对应参数
 
         //图片在线管理配置区
-        ,imageManagerUrl:"/admin/imgManager"       //图片在线管理的处理地址
+        ,imageManagerUrl:""       //图片在线管理的处理地址
         ,imageManagerPath:""                                    //图片修正地址，同imagePath
-
-        //上传图片写入数据库使用的隐藏input的id
-        ,updateImgInputId:"imageName"
-        //上传附件写入数据库要使用的隐藏input的id
-        ,updateAttaInputId:"attachName"
 
         //工具栏上的所有的功能按钮和下拉框，可以在new编辑器的实例时选择自己需要的从新定义
         , toolbars:[
@@ -138,7 +133,7 @@
                 'paragraph', 'fontfamily', 'fontsize', '|',
                 'indent', '|',
                 'justifyleft', 'justifycenter', 'justifyright', 'justifyjustify', '|',
-                'insertimage', 'emotion', 'insertcode']
+                'emotion', 'insertcode']
         ]
         ,initialFrameWidth:'82.90598290598291%'     //初始化编辑器宽度,默认1000
         ,initialFrameHeight:200  //初始化编辑器高度,默认320
