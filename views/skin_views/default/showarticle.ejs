@@ -1,11 +1,7 @@
 <% include includes/header %>
 <link href="/skins/default/stylesheets/shCoreDefault.css" rel="stylesheet">
 <script type="text/javascript" src="/skins/default/javascripts/shCore.js"></script>
-<script>
-    SyntaxHighlighter.all();
-</script>
 <div class="container">
-    <!-- Main hero unit for a primary marketing message or call to action -->
     <% include includes/banner %>
     <div class="row-fluid">
         <div class="span10">
@@ -51,13 +47,14 @@
         </div>
         <script type="text/javascript">
             var ue = UE.getEditor('remark');
+            SyntaxHighlighter.all();
             $(function(){
-
+                //回复
                 $.replyRemark = function(rid){
                     $("#cancelhf").css('display','block');
                     $("#pid").val(rid);
                 };
-
+                //取消回复
                 $.cancelReplyRemark = function(){
                     $("#cancelhf").css('display','none');
                     $("#pid").val('0')
@@ -67,15 +64,24 @@
                 var tagRight = "</div></div>";
                 var result = "";
                 function remarkHTML(data){
-                    data.forEach(function(obj){
-                        result += tagLeft;
-                        result += obj.rcontent;
-                        result += "<div><a href='#fbpy' onclick='$.replyRemark(\""+obj._id+"\");' class='btn btn-link'>回复</a></div>"
-                        if(obj.children && obj.children.length > 0){
-                            remarkHTML(obj.children);
-                        }
-                        result += tagRight;
-                    });
+                    if(data && data.length > 0){
+                        data.forEach(function(remark){
+                            var parentId = remark._id;
+                            result += tagLeft;
+                            result += remark.rcontent;
+                            result += "<div><a href='#fbpy' onclick='$.replyRemark(\""+parentId+"\");' class='btn btn-link'>回复</a></div>";
+                            var children = remark.children;
+                            if(children && children.length > 0){
+                                children.forEach(function(child){
+                                    result += tagLeft;
+                                    result += child.rcontent;
+                                    result += "<div><a href='#fbpy' onclick='$.replyRemark(\""+parentId+"\");' class='btn btn-link'>回复</a></div>";
+                                    result += tagRight;
+                                });
+                            }
+                            result += tagRight;
+                        });
+                    }
                 };
                 //异步加载回复
                 function loadRemark(){
@@ -85,6 +91,8 @@
                         $("#remarkdiv").empty();
                         $("#remarkdiv").append(result);
                         result = '';
+                        $.cancelReplyRemark();
+                        SyntaxHighlighter.all();
                     },'json');
                 };
                 loadRemark();
