@@ -43,6 +43,18 @@ body {
     word-break:break-all;
     text-indent:20px;
 }
+
+/*强制代码换行*/
+pre, code {
+    overflow: auto;
+    background: #f4f4f4;
+    padding: 5px 10px;
+    border: 1px solid #eee;
+    word-break:break-all;
+    word-wrap:break-word;  /*Internet Explorer 5.5+ */
+    white-space: pre-wrap;  /*Firefox */
+}
+
 /* zeng */
 .zeng_msgbox_layer,
 .zeng_msgbox_layer .gtl_ico_succ,
