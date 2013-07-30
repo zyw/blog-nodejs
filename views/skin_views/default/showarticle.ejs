@@ -47,7 +47,6 @@
         </div>
         <script type="text/javascript">
             var ue = UE.getEditor('remark');
-            SyntaxHighlighter.config.bloggerMode = true;
             SyntaxHighlighter.all();
             $(function(){
                 //回复
@@ -93,7 +92,7 @@
                         $("#remarkdiv").append(result);
                         result = '';
                         $.cancelReplyRemark();
-                        SyntaxHighlighter.all();
+                        SyntaxHighlighter.highlight();
                     },'json');
                 };
                 loadRemark();
@@ -104,8 +103,8 @@
                     type:'POST',
                     url:'/addRemark',
                     success:function(responseText,statusText){
+                        ue.setContent('');
                         ZENG.msgbox.show(responseText.message, responseText.rstates, 2000);
-                        ue.execCommand( 'cleardoc' );
                         loadRemark();
                     }
                 };
