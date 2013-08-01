@@ -12,6 +12,7 @@ var Link = require('../module/link');
 var Article = require('../module/article');
 var User = require('../module/user');
 var Nav = require('../module/nav');
+var Remark = require('../module/remark');
 var Toolkit = require('../module/util');
 var fs = require('fs');
 var Eventproxy = require('eventproxy');
@@ -21,8 +22,40 @@ var settings = require('../settings');
 exports.index = function(req,res){
     res.render('admin_views/index');
 };
-
+/*===================评语操作===============================*/
 exports.remark = function(req,res){
+    //获得当前页
+    var currentPage = req.query.cp || 1;
+    /*var ispQuery = req.query.isp ? {articlestatus:req.query.isp} : {};
+    var queryConent = req.query.queryContent;
+    if(queryConent){
+        ispQuery['$or'] = [{ "title" : new RegExp("^.*"+queryConent+".*$")}, { "content" : new RegExp("^.*"+queryConent+".*$")}];
+    }*/
+
+    var proxy = new Eventproxy();
+
+    proxy.assign('counts','remarks',function(counts,remarks){
+
+    });
+
+    proxy.fail(function(err){
+        req.flash('error','查询评语失败！');
+        res.render('admin_views/remark')
+    });
+
+    Remark.count({},proxy.done(function(rows){
+        if(!rows){
+            proxy.emit('counts',0);
+            proxy.emit('remarks',null);
+        }
+        var pageInfo = Toolkit.page(rows,currentPage);
+        proxy.emit('counts',pageInfo);
+
+        Remark.optsSearch({},pageInfo,proxy.done(function(remarks){
+            proxy.emit('remarks',remarks);
+        }));
+    }));
+
     res.render('admin_views/remark')
 };
 /*============================导航操作======================*/

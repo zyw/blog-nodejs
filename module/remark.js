@@ -53,3 +53,22 @@ Remark.findByPid = function(artId,pid,callback){
         callback(err,remarks);
     });
 };
+
+Remark.optsSearch = function(query,opts,callback){
+    var tempQuery = query || {};
+    db.collection('remark').find(tempQuery).skip(opts.startRow).limit(opts.rows).sort({rdt:-1}).toArray(function(err,remarks){
+        if(err){
+            return callback(err,null);
+        }
+        return callback(err,remarks);
+    });
+};
+Remark.count = function(query,callback){
+    var tempQuery = query || {};
+    db.collection('remark').count(tempQuery,function(err,rows){
+        if(err){
+            callback(err,0);
+        }
+        callback(err,rows);
+    });
+};
