@@ -53,6 +53,7 @@ pre, code {
     word-break:break-all;
     word-wrap:break-word;  /*Internet Explorer 5.5+ */
     white-space: pre-wrap;  /*Firefox */
+
 }
 
 /* zeng */
@@ -69,4 +70,4 @@ pre, code {
 .zeng_msgbox_layer .gtl_ico_fail{background-position:-6px -108px;position:absolute;left:-45px;top:0;width:45px}
 .zeng_msgbox_layer .gtl_ico_hits{background-position:-6px -54px;position:absolute;left:-45px;top:0;width:45px}
 .zeng_msgbox_layer .gtl_ico_clear{background-position:-6px 0;left:-5px;width:5px;position:absolute;top:0}
-.zeng_msgbox_layer .gtl_ico_loading{width:16px;height:16px;border:0;background-image:url(../images/gb_tip_loading.gif);float:left;margin:19px 10px 0 5px}
+.zeng_msgbox_layer .gtl_ico_loading{width:16px;height:16px;border:0;background-image:url(../images/loading.gif);float:left;margin:19px 10px 0 5px}
